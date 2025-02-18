@@ -9,7 +9,7 @@ private:
     string cognome;
     string codicefiscale;
 public:
-    Persona(const string &nome, const string &cognome, const string &codicefiscale){};
+    Persona(const string &nome, const string &cognome, const string &codicefiscale);
     string getNome()const;
     string getCognome()const;
     string getCodicefiscale()const;
