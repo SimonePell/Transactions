@@ -1,16 +1,19 @@
+#ifndef PERSONA_H 
+#define PERSONA_H
+
 #include <string>
-#include <stdio.h>
-using namespace std;
 
-
-class Persona{
+class Persona {
 private:
-    string nome;
-    string cognome;
-    string codicefiscale;
+    std::string nome;
+    std::string cognome;
+    std::string codicefiscale;
+
 public:
-    Persona(const string &nome, const string &cognome, const string &codicefiscale);
-    string getNome()const;
-    string getCognome()const;
-    string getCodicefiscale()const;
+    Persona(const std::string &nome, const std::string &cognome, const std::string &codicefiscale);
+    std::string getNome() const;
+    std::string getCognome() const;
+    std::string getCodicefiscale() const;
 };
+
+#endif 
