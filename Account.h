@@ -18,9 +18,9 @@ public:
     void addTransaction(Transaction* transaction);
     void updateSaldo(double amount);          
     void saveToFile() const;            
-    void createFile() const;                
-    void showTransactions() const;                 
+    void createFile() const;                                
     double getSaldo() const; 
+    static Account loadFromFile(const std::string& filePath);
     std::string getIban() const;
     std::string getNome() const;
     std::string getCognome() const;
