@@ -1,13 +1,19 @@
+#ifndef DEPOSIT_H
+#define DEPOSIT_H
+
 #include "Transaction.h"
-using namespace std;
+#include "Account.h"
+#include <string>
 
 class Deposit : public Transaction {
 private:
     double amount;
 public:
-    Deposit(double amount);
+    explicit Deposit(double amount);
     void apply(Account& account) const override;
-    void save(ofstream& file, double currentBalance) const override;
-    string getType() const override { return "Deposit"; }
+    void save(const std::string& filePath, double currentBalance) const override;
+    std::string getType() const override { return "Deposit"; }
     double getAmount() const override { return amount; }
 };
+
+#endif

@@ -12,20 +12,11 @@ Account::Account(const std::string& iban, const Persona& intestatario, const std
     : iban(iban), intestatario(intestatario), fileRiferimento(fileRiferimento), saldo(0) {}
 
 void Account::addTransaction(Transaction* transaction) {
-    double amount = transaction->getAmount();
-    saldo += (transaction->getType() == "Withdrawal") ? -amount : amount;
-
-    std::ofstream file(fileRiferimento, std::ios::app); // Modalità append
-    if (file.is_open()) {
-        file << transaction->getType() << "," << amount << "\n";
-        file.close();
-    } else {
-        throw std::runtime_error("Errore nell'apertura del file per scrivere la transazione");
-    }
+    transaction->apply(*this); 
 }
 
 void Account::updateSaldo(double amount) {
-    saldo = amount;
+    saldo += amount;
 }
 
 void Account::saveToFile() const {

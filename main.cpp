@@ -36,15 +36,6 @@ Account loadAccountFromFile(const std::string& filePath) {
 
             std::getline(ss, type, ',');
             ss >> amount;
-
-            if (!type.empty()) {
-                // Non aggiungere nuovamente al file, solo al vettore temporaneo
-                if (type == "Deposit") {
-                    new Deposit(amount);
-                } else if (type == "Withdrawal") {
-                    new Withdrawal(amount);
-                }
-            }
         }
 
         file.close();
@@ -110,7 +101,6 @@ void accountMenu(Account &account) {
                 std::cout << "Inserisci l'importo da depositare: ";
                 std::cin >> amount;
                 account.addTransaction(new Deposit(amount));
-                saveAccountToFile(account);
                 std::cout << "Deposito effettuato con successo.\n";
                 break;
 
@@ -119,7 +109,6 @@ void accountMenu(Account &account) {
                 std::cin >> amount;
                 if (account.getSaldo() >= amount) {
                     account.addTransaction(new Withdrawal(amount));
-                    saveAccountToFile(account);
                     std::cout << "Prelievo effettuato con successo.\n";
                 } else {
                     std::cout << "Soldi insufficienti.\n";
@@ -131,7 +120,6 @@ void accountMenu(Account &account) {
                 break;
 
             case 4:
-                saveAccountToFile(account);
                 return;
 
             default:
