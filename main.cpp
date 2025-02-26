@@ -14,50 +14,82 @@ namespace fs = std::filesystem;
 Account loadAccountFromFile(const std::string& filePath) {
     std::ifstream file(filePath);
     std::string iban, nome, cognome, codicefiscale;
-    double saldo;
 
+    double saldo;
     if (file.is_open()) {
         std::getline(file, iban);
         std::getline(file, nome);
         std::getline(file, cognome);
         std::getline(file, codicefiscale);
         file >> saldo;
-        file.close();
+        file.ignore();
 
         Persona persona(nome, cognome, codicefiscale);
         Account account(iban, persona, filePath);
         account.updateSaldo(saldo);
 
+        std::string line;
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string type;
+            double amount;
+
+            std::getline(ss, type, ',');
+            ss >> amount;
+
+            if (!type.empty()) {
+                // Non aggiungere nuovamente al file, solo al vettore temporaneo
+                if (type == "Deposit") {
+                    new Deposit(amount);
+                } else if (type == "Withdrawal") {
+                    new Withdrawal(amount);
+                }
+            }
+        }
+
+        file.close();
         return account;
+    } else {
+        throw std::runtime_error("Errore durante la lettura del file");
     }
 }
-
-#include <fstream>
-#include <filesystem>
-
-namespace fs = std::filesystem;
 
 void saveAccountToFile(const Account& account) {
     std::string directory = "TRANSACTION/Accounts/";
 
-    // Crea la cartella se non esiste
     if (!fs::exists(directory)) {
         fs::create_directories(directory);
     }
 
-    // Crea il file con il nome IBAN_transactions.csv
-    std::ofstream file(directory + account.getIban() + "_transactions.csv");
+    std::ofstream file(account.getFileRiferimento(), std::ios::trunc); // Sovrascrive tutto
     if (file.is_open()) {
         file << account.getIban() << "\n"
              << account.getNome() << "\n"
              << account.getCognome() << "\n"
              << account.getCodicefiscale() << "\n"
              << account.getSaldo() << "\n";
+
+        std::ifstream fileInput(account.getFileRiferimento());
+        if (fileInput.is_open()) {
+            std::string line;
+
+            // Salta le prime 5 righe (dati dell'account)
+            for (int i = 0; i < 5 && std::getline(fileInput, line); ++i) {}
+
+            // Scrivi tutte le transazioni nel file di output
+            while (std::getline(fileInput, line)) {
+                file << line << "\n";
+            }
+
+            fileInput.close();
+        }
         file.close();
     } else {
-        throw std::runtime_error("Errore: impossibile aprire il file per la scrittura.");
+        throw std::runtime_error("c'è stato un errore nell'apertura del file");
     }
 }
+
+
 
 
 void accountMenu(Account &account) {
@@ -68,7 +100,7 @@ void accountMenu(Account &account) {
         std::cout << "\n--- Menu Account ---\n";
         std::cout << "1. Effettua un deposito\n";
         std::cout << "2. Effettua un prelievo\n";
-        std::cout << "3. Visualizza saldo\n";
+        std::cout << "3. Visualizza saldo\n"; 
         std::cout << "4. Esci dall'account\n";
         std::cout << "Scegli: ";
         std::cin >> choice;
@@ -90,7 +122,7 @@ void accountMenu(Account &account) {
                     saveAccountToFile(account);
                     std::cout << "Prelievo effettuato con successo.\n";
                 } else {
-                    std::cout << "Saldo insufficiente.\n";
+                    std::cout << "Soldi insufficienti.\n";
                 }
                 break;
 
@@ -107,6 +139,7 @@ void accountMenu(Account &account) {
         }
     }
 }
+
 
 
 int main() {

@@ -1,63 +1,72 @@
 #include "Account.h"
+#include "Deposit.h"
+#include "Withdrawal.h"
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
 Account::Account(const std::string& iban, const Persona& intestatario, const std::string& fileRiferimento)
-    : iban(iban), intestatario(intestatario), fileRiferimento(fileRiferimento), saldo(0) {
-    std::string directory = "TRANSACTION/Accounts/";
-    if (!fs::exists(directory)) {
-        fs::create_directories(directory);
-    }
-    createFile();
-}
+    : iban(iban), intestatario(intestatario), fileRiferimento(fileRiferimento), saldo(0) {}
 
 void Account::addTransaction(Transaction* transaction) {
-    transazioni.emplace_back(std::unique_ptr<Transaction>(transaction));
-    transaction->apply(*this);
-    saveToFile();
+    double amount = transaction->getAmount();
+    saldo += (transaction->getType() == "Withdrawal") ? -amount : amount;
+
+    std::ofstream file(fileRiferimento, std::ios::app); // Modalità append
+    if (file.is_open()) {
+        file << transaction->getType() << "," << amount << "\n";
+        file.close();
+    } else {
+        throw std::runtime_error("Errore nell'apertura del file per scrivere la transazione");
+    }
 }
 
 void Account::updateSaldo(double amount) {
-    saldo += amount;
+    saldo = amount;
 }
 
 void Account::saveToFile() const {
-    std::ofstream file(fileRiferimento, std::ios::app);
+    std::ofstream file(fileRiferimento);
     if (file.is_open()) {
-        for (const auto& transaction : transazioni) {
-            transaction->save(file, saldo);
-        }
+        file << iban << "\n"
+             << intestatario.getNome() << "\n"
+             << intestatario.getCognome() << "\n"
+             << intestatario.getCodicefiscale() << "\n"
+             << saldo << "\n";
+        file.close();
+    } else {
+        throw std::runtime_error("Errore nell'apertura del file per salvare l'account");
     }
-    file.close();
 }
 
 void Account::createFile() const {
-    std::ofstream file(fileRiferimento);
-    if (file.is_open()) {
-        file << "Type,Amount,Current Balance\n";  // CSV Header
+    if (!fs::exists(fileRiferimento)) {
+        std::ofstream file(fileRiferimento);
+        if (file.is_open()) {
+            file << iban << "\n"
+                 << intestatario.getNome() << "\n"
+                 << intestatario.getCognome() << "\n"
+                 << intestatario.getCodicefiscale() << "\n"
+                 << saldo << "\n";
+            file.close();
+        } else {
+            throw std::runtime_error("Errore nella creazione del file");
+        }
     }
-    file.close();
 }
 
-double Account::getSaldo() const {
-    return saldo;
-}
+double Account::getSaldo() const {return saldo;}
 
-std::string Account::getIban() const {
-    return iban;
-}
+std::string Account::getIban() const { return iban;}
 
-std::string Account::getNome() const {
-    return intestatario.getNome();
-}
+std::string Account::getNome() const { return intestatario.getNome();}
 
-std::string Account::getCognome() const {
-    return intestatario.getCognome();
-}
+std::string Account::getCognome() const { return intestatario.getCognome();}
 
-std::string Account::getCodicefiscale() const {
-    return intestatario.getCodicefiscale();
-}
+std::string Account::getCodicefiscale() const { return intestatario.getCodicefiscale();}
+
+std::string Account::getFileRiferimento() const {return fileRiferimento;}
+

@@ -1,4 +1,4 @@
-#ifndef TRANSACTION_H  // Include guard inizia qui
+#ifndef TRANSACTION_H  
 #define TRANSACTION_H
 
 #include <fstream>
@@ -15,4 +15,4 @@ public:
     virtual double getAmount() const = 0;
 };
 
-#endif // TRANSACTION_H  // Include guard termina qui
+#endif 
