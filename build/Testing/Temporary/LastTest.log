@@ -1,0 +1,22 @@
+Start testing: Feb 26 15:34 CET
+----------------------------------------------------------
+1/1 Testing: ExampleTest
+1/1 Test: ExampleTest
+Command: "/home/simone/Documents/Università/LabProgrammazione/Transactions/build/test_example"
+Directory: /home/simone/Documents/Università/LabProgrammazione/Transactions/build
+"ExampleTest" start time: Feb 26 15:34 CET
+Output:
+----------------------------------------------------------
+Running main() from /home/simone/Documents/Università/LabProgrammazione/Transactions/third_party/googletest/googletest/src/gtest_main.cc
+[==========] Running 0 tests from 0 test suites.
+[==========] 0 tests from 0 test suites ran. (0 ms total)
+[  PASSED  ] 0 tests.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"ExampleTest" end time: Feb 26 15:34 CET
+"ExampleTest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Feb 26 15:34 CET
