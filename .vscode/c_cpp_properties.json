@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/third_party/googletest/googletest/include",
-                "${workspaceFolder}/third_party/googletest/googlemock/include"
+                "${workspaceFolder}/third_party/googletest/googlemock/include",
+                "${workspaceFolder}"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

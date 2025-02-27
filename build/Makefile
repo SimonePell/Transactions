@@ -97,7 +97,7 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target list_install_components
 list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"gmock\" \"gtest\""
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
 .PHONY : list_install_components
 
 # Special rule for the target list_install_components
@@ -172,17 +172,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named test_example
+# Target rules for targets named runTests
 
 # Build rule for target.
-test_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_example
-.PHONY : test_example
+runTests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 runTests
+.PHONY : runTests
 
 # fast build rule for target.
-test_example/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_example.dir/build.make CMakeFiles/test_example.dir/build
-.PHONY : test_example/fast
+runTests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/build
+.PHONY : runTests/fast
 
 #=============================================================================
 # Target rules for targets named gmock
@@ -194,7 +194,7 @@ gmock: cmake_check_build_system
 
 # fast build rule for target.
 gmock/fast:
-	$(MAKE) $(MAKESILENT) -f third_party/googletest/googlemock/CMakeFiles/gmock.dir/build.make third_party/googletest/googlemock/CMakeFiles/gmock.dir/build
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build
 .PHONY : gmock/fast
 
 #=============================================================================
@@ -207,7 +207,7 @@ gmock_main: cmake_check_build_system
 
 # fast build rule for target.
 gmock_main/fast:
-	$(MAKE) $(MAKESILENT) -f third_party/googletest/googlemock/CMakeFiles/gmock_main.dir/build.make third_party/googletest/googlemock/CMakeFiles/gmock_main.dir/build
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
 .PHONY : gmock_main/fast
 
 #=============================================================================
@@ -220,7 +220,7 @@ gtest: cmake_check_build_system
 
 # fast build rule for target.
 gtest/fast:
-	$(MAKE) $(MAKESILENT) -f third_party/googletest/googletest/CMakeFiles/gtest.dir/build.make third_party/googletest/googletest/CMakeFiles/gtest.dir/build
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
 
 #=============================================================================
@@ -233,32 +233,224 @@ gtest_main: cmake_check_build_system
 
 # fast build rule for target.
 gtest_main/fast:
-	$(MAKE) $(MAKESILENT) -f third_party/googletest/googletest/CMakeFiles/gtest_main.dir/build.make third_party/googletest/googletest/CMakeFiles/gtest_main.dir/build
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
 .PHONY : gtest_main/fast
 
-tests/test_example.o: tests/test_example.cpp.o
-.PHONY : tests/test_example.o
+Account.o: Account.cpp.o
+.PHONY : Account.o
 
 # target to build an object file
-tests/test_example.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_example.dir/build.make CMakeFiles/test_example.dir/tests/test_example.cpp.o
-.PHONY : tests/test_example.cpp.o
+Account.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.o
+.PHONY : Account.cpp.o
 
-tests/test_example.i: tests/test_example.cpp.i
-.PHONY : tests/test_example.i
+Account.i: Account.cpp.i
+.PHONY : Account.i
 
 # target to preprocess a source file
-tests/test_example.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_example.dir/build.make CMakeFiles/test_example.dir/tests/test_example.cpp.i
-.PHONY : tests/test_example.cpp.i
+Account.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.i
+.PHONY : Account.cpp.i
 
-tests/test_example.s: tests/test_example.cpp.s
-.PHONY : tests/test_example.s
+Account.s: Account.cpp.s
+.PHONY : Account.s
 
 # target to generate assembly for a file
-tests/test_example.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_example.dir/build.make CMakeFiles/test_example.dir/tests/test_example.cpp.s
-.PHONY : tests/test_example.cpp.s
+Account.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.s
+.PHONY : Account.cpp.s
+
+Deposit.o: Deposit.cpp.o
+.PHONY : Deposit.o
+
+# target to build an object file
+Deposit.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.o
+.PHONY : Deposit.cpp.o
+
+Deposit.i: Deposit.cpp.i
+.PHONY : Deposit.i
+
+# target to preprocess a source file
+Deposit.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.i
+.PHONY : Deposit.cpp.i
+
+Deposit.s: Deposit.cpp.s
+.PHONY : Deposit.s
+
+# target to generate assembly for a file
+Deposit.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.s
+.PHONY : Deposit.cpp.s
+
+Persona.o: Persona.cpp.o
+.PHONY : Persona.o
+
+# target to build an object file
+Persona.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.o
+.PHONY : Persona.cpp.o
+
+Persona.i: Persona.cpp.i
+.PHONY : Persona.i
+
+# target to preprocess a source file
+Persona.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.i
+.PHONY : Persona.cpp.i
+
+Persona.s: Persona.cpp.s
+.PHONY : Persona.s
+
+# target to generate assembly for a file
+Persona.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.s
+.PHONY : Persona.cpp.s
+
+Withdrawal.o: Withdrawal.cpp.o
+.PHONY : Withdrawal.o
+
+# target to build an object file
+Withdrawal.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.o
+.PHONY : Withdrawal.cpp.o
+
+Withdrawal.i: Withdrawal.cpp.i
+.PHONY : Withdrawal.i
+
+# target to preprocess a source file
+Withdrawal.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.i
+.PHONY : Withdrawal.cpp.i
+
+Withdrawal.s: Withdrawal.cpp.s
+.PHONY : Withdrawal.s
+
+# target to generate assembly for a file
+Withdrawal.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.s
+.PHONY : Withdrawal.cpp.s
+
+tests/test_Account.o: tests/test_Account.cpp.o
+.PHONY : tests/test_Account.o
+
+# target to build an object file
+tests/test_Account.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Account.cpp.o
+.PHONY : tests/test_Account.cpp.o
+
+tests/test_Account.i: tests/test_Account.cpp.i
+.PHONY : tests/test_Account.i
+
+# target to preprocess a source file
+tests/test_Account.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Account.cpp.i
+.PHONY : tests/test_Account.cpp.i
+
+tests/test_Account.s: tests/test_Account.cpp.s
+.PHONY : tests/test_Account.s
+
+# target to generate assembly for a file
+tests/test_Account.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Account.cpp.s
+.PHONY : tests/test_Account.cpp.s
+
+tests/test_Deposit.o: tests/test_Deposit.cpp.o
+.PHONY : tests/test_Deposit.o
+
+# target to build an object file
+tests/test_Deposit.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Deposit.cpp.o
+.PHONY : tests/test_Deposit.cpp.o
+
+tests/test_Deposit.i: tests/test_Deposit.cpp.i
+.PHONY : tests/test_Deposit.i
+
+# target to preprocess a source file
+tests/test_Deposit.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Deposit.cpp.i
+.PHONY : tests/test_Deposit.cpp.i
+
+tests/test_Deposit.s: tests/test_Deposit.cpp.s
+.PHONY : tests/test_Deposit.s
+
+# target to generate assembly for a file
+tests/test_Deposit.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Deposit.cpp.s
+.PHONY : tests/test_Deposit.cpp.s
+
+tests/test_Persona.o: tests/test_Persona.cpp.o
+.PHONY : tests/test_Persona.o
+
+# target to build an object file
+tests/test_Persona.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Persona.cpp.o
+.PHONY : tests/test_Persona.cpp.o
+
+tests/test_Persona.i: tests/test_Persona.cpp.i
+.PHONY : tests/test_Persona.i
+
+# target to preprocess a source file
+tests/test_Persona.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Persona.cpp.i
+.PHONY : tests/test_Persona.cpp.i
+
+tests/test_Persona.s: tests/test_Persona.cpp.s
+.PHONY : tests/test_Persona.s
+
+# target to generate assembly for a file
+tests/test_Persona.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Persona.cpp.s
+.PHONY : tests/test_Persona.cpp.s
+
+tests/test_Withdrawal.o: tests/test_Withdrawal.cpp.o
+.PHONY : tests/test_Withdrawal.o
+
+# target to build an object file
+tests/test_Withdrawal.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.o
+.PHONY : tests/test_Withdrawal.cpp.o
+
+tests/test_Withdrawal.i: tests/test_Withdrawal.cpp.i
+.PHONY : tests/test_Withdrawal.i
+
+# target to preprocess a source file
+tests/test_Withdrawal.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.i
+.PHONY : tests/test_Withdrawal.cpp.i
+
+tests/test_Withdrawal.s: tests/test_Withdrawal.cpp.s
+.PHONY : tests/test_Withdrawal.s
+
+# target to generate assembly for a file
+tests/test_Withdrawal.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.s
+.PHONY : tests/test_Withdrawal.cpp.s
+
+tests/test_main.o: tests/test_main.cpp.o
+.PHONY : tests/test_main.o
+
+# target to build an object file
+tests/test_main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_main.cpp.o
+.PHONY : tests/test_main.cpp.o
+
+tests/test_main.i: tests/test_main.cpp.i
+.PHONY : tests/test_main.i
+
+# target to preprocess a source file
+tests/test_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_main.cpp.i
+.PHONY : tests/test_main.cpp.i
+
+tests/test_main.s: tests/test_main.cpp.s
+.PHONY : tests/test_main.s
+
+# target to generate assembly for a file
+tests/test_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_main.cpp.s
+.PHONY : tests/test_main.cpp.s
 
 # Help Target
 help:
@@ -277,10 +469,34 @@ help:
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
-	@echo "... test_example"
-	@echo "... tests/test_example.o"
-	@echo "... tests/test_example.i"
-	@echo "... tests/test_example.s"
+	@echo "... runTests"
+	@echo "... Account.o"
+	@echo "... Account.i"
+	@echo "... Account.s"
+	@echo "... Deposit.o"
+	@echo "... Deposit.i"
+	@echo "... Deposit.s"
+	@echo "... Persona.o"
+	@echo "... Persona.i"
+	@echo "... Persona.s"
+	@echo "... Withdrawal.o"
+	@echo "... Withdrawal.i"
+	@echo "... Withdrawal.s"
+	@echo "... tests/test_Account.o"
+	@echo "... tests/test_Account.i"
+	@echo "... tests/test_Account.s"
+	@echo "... tests/test_Deposit.o"
+	@echo "... tests/test_Deposit.i"
+	@echo "... tests/test_Deposit.s"
+	@echo "... tests/test_Persona.o"
+	@echo "... tests/test_Persona.i"
+	@echo "... tests/test_Persona.s"
+	@echo "... tests/test_Withdrawal.o"
+	@echo "... tests/test_Withdrawal.i"
+	@echo "... tests/test_Withdrawal.s"
+	@echo "... tests/test_main.o"
+	@echo "... tests/test_main.i"
+	@echo "... tests/test_main.s"
 .PHONY : help
 
 
