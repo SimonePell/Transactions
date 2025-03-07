@@ -7,11 +7,13 @@ using namespace std;
 
 Withdrawal::Withdrawal(double amount) : amount(amount) {}
 
+//aggiorna il saldo e salva la transazione
 void Withdrawal::apply(Account& account) const {
     account.updateSaldo(-amount);
     save(account.getFileRiferimento(), account.getSaldo());
 }
 
+//funzione che scrive la transazione di prelievo nel file apposito creando una nuova riga 
 void Withdrawal::save(const std::string& filePath, double currentBalance) const {
     ofstream outFile(filePath, ios::app);
     if (outFile.is_open()) {
