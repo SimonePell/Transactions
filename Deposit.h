@@ -4,10 +4,8 @@
 #include "Transaction.h"
 #include "Account.h"
 #include <string>
-
+//TO_DO data, descrizione
 class Deposit : public Transaction {
-private:
-    double amount;
 public:
     explicit Deposit(double amount);
     void apply(Account& account) const override;

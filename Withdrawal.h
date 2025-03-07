@@ -6,8 +6,6 @@
 #include <string>
 
 class Withdrawal : public Transaction {
-private:
-    double amount;
 public:
     explicit Withdrawal(double amount);
     void apply(Account& account) const override;

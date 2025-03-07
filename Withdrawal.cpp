@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Withdrawal::Withdrawal(double amount) : amount(amount) {}
+Withdrawal::Withdrawal(double amount) : amount(amount) {this->amount=amount}
 
 //aggiorna il saldo e salva la transazione
 void Withdrawal::apply(Account& account) const {

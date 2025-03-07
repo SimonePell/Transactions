@@ -3,10 +3,15 @@
 
 #include <fstream>
 #include <string>
+#include <ctime>
 
 class Account;
 
 class Transaction {
+protected:
+    double amount;
+    std::string description;
+    std::time_t time;
 public:
     virtual ~Transaction() {}
     virtual void apply(Account& account) const = 0;

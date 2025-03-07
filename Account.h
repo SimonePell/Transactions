@@ -5,6 +5,8 @@
 #include "Transaction.h"
 #include <string>
 
+//TO_DO ricerca trasazioni, modifica ed elimina transazioni, tutto in base ad una descrizione o data o parola data, check yransazioni non esistenti e non (se il saldo in cambia)
+//controllo transazioni
 class Account {
 private:
     std::string iban;

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Deposit::Deposit(double amount) : amount(amount) {}
+Deposit::Deposit(double amount) : amount(amount) {this->amount=amount;}
 
 //aggiorna il saldo e salva la transazione
 void Deposit::apply(Account& account) const {
