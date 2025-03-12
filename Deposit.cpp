@@ -5,7 +5,11 @@
 
 using namespace std;
 
+//costruttore nuova transazione
 Deposit::Deposit(double amount, std::string description): Transaction(amount, std::move(description)) {}
+
+//cotruttore per caricare una transazione da un file
+Deposit::Deposit(double amount, std::string description, std::time_t timeStamp): Transaction(amount, std::move(description), timeStamp) {}
 
 //aggiorna il saldo con save() e salva la transazione nel log con logTransaction()
 void Deposit::apply(Account& account) const {

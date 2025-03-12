@@ -13,7 +13,10 @@ protected:
     std::string description;
     std::time_t time;
 public:
-    Transaction(double amt, std::string desc = "No Description"): amount(amt), description(std::move(desc)), time(std::time(nullptr)) {} 
+    //costruttore nuova transazione
+    Transaction(double amt, std::string desc = "No Description"): amount(amt), description(std::move(desc)), time(std::time(nullptr)) {}
+    //costruttore per una transazione già presente in un file 
+    Transaction(double amt, std::string desc, std::time_t timeStamp) : amount(amt), description(std::move(desc)), time(timeStamp) {}
     virtual ~Transaction() {}
     virtual void apply(Account& account) const = 0;
     virtual void save(const std::string& file, double currentBalance) const = 0;

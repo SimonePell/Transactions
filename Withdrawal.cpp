@@ -5,7 +5,11 @@
 
 using namespace std;
 
+//costruttore nuova transazione
 Withdrawal::Withdrawal(double amount, std::string description): Transaction(amount, std::move(description)) {}
+
+//cotruttore per caricare una transazione da un file
+Withdrawal::Withdrawal(double amount, std::string description, std::time_t timeStamp): Transaction(amount, std::move(description), timeStamp) {}
 
 //aggiorna il saldo con save() e salva la transazione nel log con logTransaction()
 void Withdrawal::apply(Account& account) const {
