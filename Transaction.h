@@ -22,6 +22,9 @@ public:
     std::time_t getTime() const { return time; }
     std::string getDescription() const { return description; }
     virtual void logTransaction(const std::string& filePath, const std::string& iban) const = 0;
+    virtual void setAmount(double newAmount) = 0;
+    virtual void setDescription(const std::string& newDescription) = 0;
+
 };
 
 #endif 
