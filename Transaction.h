@@ -21,6 +21,7 @@ public:
     virtual double getAmount() const = 0;
     std::time_t getTime() const { return time; }
     std::string getDescription() const { return description; }
+    virtual void logTransaction(const std::string& filePath, const std::string& iban) const = 0;
 };
 
 #endif 
