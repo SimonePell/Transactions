@@ -37,11 +37,8 @@ public:
     std::string getIban() const {return iban;}
 
     virtual void logTransaction(const std::string& filePath, const std::string& iban) const = 0;
-    virtual void updateLogTransaction(const std::string& filePath, const Transaction& updatedTransaction);
+    virtual void updateLogTransaction(const std::string& filePath, const Transaction& updatedTransaction) = 0;
 
-    virtual void setAmount(double newAmount) = 0;
-    virtual void setDescription(const std::string& newDescription) = 0;
-    virtual void modifyAmount(double newAmount, Account& account) = 0;
     virtual void modifyDescription(const std::string& newDescription) = 0;
 
 };

@@ -19,22 +19,27 @@ private:
 public:
     Account(const std::string& iban, const Persona& intestatario, const std::string& fileRiferimento);
     ~Account(); 
+
     void addTransaction(Transaction* transaction);
     void updateSaldo(double amount);          
-    void saveToFile() const;            
-    void createFile() const;                                
-    double getSaldo() const; 
-    static Account loadFromFile(const std::string& filePath);
+    void saveToFile() const; 
+
     std::string getIban() const;
     std::string getNome() const;
     std::string getCognome() const;
     std::string getCodicefiscale() const;
     std::string getFileRiferimento() const;
-    Transaction* findTransactionByDescription(const std::string& desc) const;
+    double getSaldo() const; 
+    void getTransactions(const std::string& transactionsFilePath);
+    
+    static Account loadFromFile(const std::string& filePath);
+
+    std::vector<Transaction*> findTransactionsByDescription(const std::string& desc) const;
     std::vector<Transaction*> findTransactionsByDate(const std::string& date) const;
-    void modifyTransactionAmount(const std::string& desc, double newAmount);
-    void modifyTransactionDescription(const std::string& desc, const std::string& newDescription);
-    void deleteTransaction(const std::string& desc);
+    Transaction* findTransactionByIndex(int index) const;
+
+    void deleteTransaction(int id);
+    
     void printTransactions() const;
 };
 

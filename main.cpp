@@ -8,26 +8,35 @@
 #include "Deposit.h"
 #include "Withdrawal.h"
 
+const std::string ACCOUNTS_PATH = "TRANSACTION/Accounts/";
+const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt";
+
 namespace fs = std::filesystem;
 
 void accountMenu(Account &account) {
     int choice;
     double amount;
+    std::string desc, newDesc;
 
     while (true) {
         std::cout << "\n--- Menu Account ---\n";
         std::cout << "1. Effettua un deposito\n";
         std::cout << "2. Effettua un prelievo\n";
         std::cout << "3. Visualizza saldo\n"; 
-        std::cout << "4. Esci dall'account\n";
+        std::cout << "4. Modifica Transazione\n";
+        std::cout << "5. Elimina Transazione\n";
+        std::cout << "6. Visualizza Transazioni\n";
+        std::cout << "7. Esci dall'account\n";
         std::cout << "Scegli: ";
         std::cin >> choice;
 
         switch (choice) {
-            case 1:
+            case 1: 
                 std::cout << "Inserisci l'importo da depositare: ";
                 std::cin >> amount;
-                account.addTransaction(new Deposit(amount));
+                std::cout << "Inserisci la descrizione del deposito: ";
+                std::cin >> desc;
+                account.addTransaction(new Deposit(amount, desc, account.getIban()));
                 std::cout << "Deposito effettuato con successo.\n";
                 break;
 
@@ -35,7 +44,9 @@ void accountMenu(Account &account) {
                 std::cout << "Inserisci l'importo da prelevare: ";
                 std::cin >> amount;
                 if (account.getSaldo() >= amount) {
-                    account.addTransaction(new Withdrawal(amount));
+                    std::cout << "Inserisci la descrizione del prelievo: ";
+                    std::cin >> desc;
+                    account.addTransaction(new Withdrawal(amount, desc, account.getIban())); 
                     std::cout << "Prelievo effettuato con successo.\n";
                 } else {
                     std::cout << "Soldi insufficienti.\n";
@@ -47,6 +58,33 @@ void accountMenu(Account &account) {
                 break;
 
             case 4:
+                std::cout<< "transazioni modificabili: \n";
+                account.printTransactions();
+                std::cout << "inserisci l'id della transazione da modificare";
+                int ide;
+                std::cin >> ide;
+                Transaction* t = account.findTransactionByIndex(ide);
+                std::cout << "inserisci la nuova descrizione: ";
+                std::cin >> newDesc;
+                t->modifyDescription(newDesc);
+                break;
+
+            case 5:
+                std::cout << "transazioni eliminabili: \n";
+                account.printTransactions();
+                std::cout << "inserisci l'id della transazione da eliminare";
+                int id;
+                std::cin >> id;
+                Transaction* t = account.findTransactionByIndex(id);
+                std::cout << "è stata elmiinata la transazione: " << t->getDescription();
+                account.deleteTransaction(id);
+                break;
+
+            case 6:
+                account.printTransactions();
+                break;
+
+            case 7:
                 return;
 
             default:
@@ -72,7 +110,7 @@ int main() {
                 std::cout << "Inserisci l'IBAN dell'account: ";
                 std::cin >> iban;
                 {
-                    std::string filePath = "TRANSACTION/Accounts/" + iban + "_transactions.csv";
+                    std::string filePath = ACCOUNTS_PATH + iban + "_transactions.csv";
                     if (fs::exists(filePath)) {
                         Account account = Account::loadFromFile(filePath);
                         accountMenu(account);
