@@ -5,6 +5,7 @@
 #include "Transaction.h"
 #include <string>
 #include <vector>
+#include <memory>
 
 //TO_DO ricerca trasazioni, elimina transazioni, tutto in base ad una descrizione o data o parola data, check yransazioni esistenti e non (se il saldo in cambia)
 //controllo transazioni
@@ -14,15 +15,17 @@ private:
     Persona intestatario;
     std::string fileRiferimento;
     double saldo;
-    std::vector<Transaction*>transazioni;
 
 public:
     Account(const std::string& iban, const Persona& intestatario, const std::string& fileRiferimento);
     ~Account(); 
 
-    void addTransaction(Transaction* transaction);
-    void updateSaldo(double amount);          
-    void saveToFile() const; 
+    void addTransaction(std::unique_ptr<Transaction> transaction);
+    void updateSaldo(double amount);  
+    
+    
+    void saveToAccountFile() const; 
+
 
     std::string getIban() const;
     std::string getNome() const;
@@ -30,15 +33,12 @@ public:
     std::string getCodicefiscale() const;
     std::string getFileRiferimento() const;
     double getSaldo() const; 
-    void getTransactions(const std::string& transactionsFilePath);
     
     static Account loadFromFile(const std::string& filePath);
 
-    std::vector<Transaction*> findTransactionsByDescription(const std::string& desc) const;
-    std::vector<Transaction*> findTransactionsByDate(const std::string& date) const;
-    Transaction* findTransactionByIndex(int index) const;
 
-    void deleteTransaction(int id);
+    void deleteTransaction();
+    void deleteTransactionFromLog(const std::string& filePath, Transaction* t);
     
     void printTransactions() const;
 };

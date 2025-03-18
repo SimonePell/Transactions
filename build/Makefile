@@ -172,6 +172,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named main
+
+# Build rule for target.
+main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
+.PHONY : main
+
+# fast build rule for target.
+main/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
+.PHONY : main/fast
+
+#=============================================================================
 # Target rules for targets named runTests
 
 # Build rule for target.
@@ -241,7 +254,7 @@ Account.o: Account.cpp.o
 
 # target to build an object file
 Account.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Account.cpp.o
 .PHONY : Account.cpp.o
 
 Account.i: Account.cpp.i
@@ -249,7 +262,7 @@ Account.i: Account.cpp.i
 
 # target to preprocess a source file
 Account.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Account.cpp.i
 .PHONY : Account.cpp.i
 
 Account.s: Account.cpp.s
@@ -257,7 +270,7 @@ Account.s: Account.cpp.s
 
 # target to generate assembly for a file
 Account.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Account.cpp.s
 .PHONY : Account.cpp.s
 
 Deposit.o: Deposit.cpp.o
@@ -265,7 +278,7 @@ Deposit.o: Deposit.cpp.o
 
 # target to build an object file
 Deposit.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Deposit.cpp.o
 .PHONY : Deposit.cpp.o
 
 Deposit.i: Deposit.cpp.i
@@ -273,7 +286,7 @@ Deposit.i: Deposit.cpp.i
 
 # target to preprocess a source file
 Deposit.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Deposit.cpp.i
 .PHONY : Deposit.cpp.i
 
 Deposit.s: Deposit.cpp.s
@@ -281,7 +294,7 @@ Deposit.s: Deposit.cpp.s
 
 # target to generate assembly for a file
 Deposit.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Deposit.cpp.s
 .PHONY : Deposit.cpp.s
 
 Persona.o: Persona.cpp.o
@@ -289,7 +302,7 @@ Persona.o: Persona.cpp.o
 
 # target to build an object file
 Persona.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Persona.cpp.o
 .PHONY : Persona.cpp.o
 
 Persona.i: Persona.cpp.i
@@ -297,7 +310,7 @@ Persona.i: Persona.cpp.i
 
 # target to preprocess a source file
 Persona.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Persona.cpp.i
 .PHONY : Persona.cpp.i
 
 Persona.s: Persona.cpp.s
@@ -305,7 +318,7 @@ Persona.s: Persona.cpp.s
 
 # target to generate assembly for a file
 Persona.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Persona.cpp.s
 .PHONY : Persona.cpp.s
 
 Withdrawal.o: Withdrawal.cpp.o
@@ -313,7 +326,7 @@ Withdrawal.o: Withdrawal.cpp.o
 
 # target to build an object file
 Withdrawal.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Withdrawal.cpp.o
 .PHONY : Withdrawal.cpp.o
 
 Withdrawal.i: Withdrawal.cpp.i
@@ -321,7 +334,7 @@ Withdrawal.i: Withdrawal.cpp.i
 
 # target to preprocess a source file
 Withdrawal.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Withdrawal.cpp.i
 .PHONY : Withdrawal.cpp.i
 
 Withdrawal.s: Withdrawal.cpp.s
@@ -329,14 +342,39 @@ Withdrawal.s: Withdrawal.cpp.s
 
 # target to generate assembly for a file
 Withdrawal.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Withdrawal.cpp.s
 .PHONY : Withdrawal.cpp.s
+
+main.o: main.cpp.o
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 tests/test_Account.o: tests/test_Account.cpp.o
 .PHONY : tests/test_Account.o
 
 # target to build an object file
 tests/test_Account.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Account.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Account.cpp.o
 .PHONY : tests/test_Account.cpp.o
 
@@ -345,6 +383,7 @@ tests/test_Account.i: tests/test_Account.cpp.i
 
 # target to preprocess a source file
 tests/test_Account.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Account.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Account.cpp.i
 .PHONY : tests/test_Account.cpp.i
 
@@ -353,6 +392,7 @@ tests/test_Account.s: tests/test_Account.cpp.s
 
 # target to generate assembly for a file
 tests/test_Account.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Account.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Account.cpp.s
 .PHONY : tests/test_Account.cpp.s
 
@@ -361,6 +401,7 @@ tests/test_Deposit.o: tests/test_Deposit.cpp.o
 
 # target to build an object file
 tests/test_Deposit.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Deposit.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Deposit.cpp.o
 .PHONY : tests/test_Deposit.cpp.o
 
@@ -369,6 +410,7 @@ tests/test_Deposit.i: tests/test_Deposit.cpp.i
 
 # target to preprocess a source file
 tests/test_Deposit.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Deposit.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Deposit.cpp.i
 .PHONY : tests/test_Deposit.cpp.i
 
@@ -377,6 +419,7 @@ tests/test_Deposit.s: tests/test_Deposit.cpp.s
 
 # target to generate assembly for a file
 tests/test_Deposit.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Deposit.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Deposit.cpp.s
 .PHONY : tests/test_Deposit.cpp.s
 
@@ -385,7 +428,7 @@ tests/test_Persona.o: tests/test_Persona.cpp.o
 
 # target to build an object file
 tests/test_Persona.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Persona.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Persona.cpp.o
 .PHONY : tests/test_Persona.cpp.o
 
 tests/test_Persona.i: tests/test_Persona.cpp.i
@@ -393,7 +436,7 @@ tests/test_Persona.i: tests/test_Persona.cpp.i
 
 # target to preprocess a source file
 tests/test_Persona.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Persona.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Persona.cpp.i
 .PHONY : tests/test_Persona.cpp.i
 
 tests/test_Persona.s: tests/test_Persona.cpp.s
@@ -401,7 +444,7 @@ tests/test_Persona.s: tests/test_Persona.cpp.s
 
 # target to generate assembly for a file
 tests/test_Persona.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Persona.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Persona.cpp.s
 .PHONY : tests/test_Persona.cpp.s
 
 tests/test_Withdrawal.o: tests/test_Withdrawal.cpp.o
@@ -409,6 +452,7 @@ tests/test_Withdrawal.o: tests/test_Withdrawal.cpp.o
 
 # target to build an object file
 tests/test_Withdrawal.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Withdrawal.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.o
 .PHONY : tests/test_Withdrawal.cpp.o
 
@@ -417,6 +461,7 @@ tests/test_Withdrawal.i: tests/test_Withdrawal.cpp.i
 
 # target to preprocess a source file
 tests/test_Withdrawal.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Withdrawal.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.i
 .PHONY : tests/test_Withdrawal.cpp.i
 
@@ -425,6 +470,7 @@ tests/test_Withdrawal.s: tests/test_Withdrawal.cpp.s
 
 # target to generate assembly for a file
 tests/test_Withdrawal.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/tests/test_Withdrawal.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.s
 .PHONY : tests/test_Withdrawal.cpp.s
 
@@ -469,6 +515,7 @@ help:
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
+	@echo "... main"
 	@echo "... runTests"
 	@echo "... Account.o"
 	@echo "... Account.i"
@@ -482,6 +529,9 @@ help:
 	@echo "... Withdrawal.o"
 	@echo "... Withdrawal.i"
 	@echo "... Withdrawal.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 	@echo "... tests/test_Account.o"
 	@echo "... tests/test_Account.i"
 	@echo "... tests/test_Account.s"

@@ -4,7 +4,10 @@
 #include <iostream>
 #include <sstream>
 
+
 using namespace std;
+const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt"; 
+
 
 //costruttore nuova transazione
 Deposit::Deposit(double amount, std::string description, std::string iban)
@@ -14,15 +17,15 @@ Deposit::Deposit(double amount, std::string description, std::string iban)
 Deposit::Deposit(double amount, std::string description, std::time_t timeStamp, std::time_t lastMod, std::string iban)
     : Transaction(amount, std::move(description), timeStamp, lastMod, std::move(iban)) {}
 
-//aggiorna il saldo con save() e salva la transazione nel log con logTransaction()
+//aggiorna il saldo con saveToAccountFile() e salva la transazione nel log con logTransaction()
 void Deposit::apply(Account& account) const {
     account.updateSaldo(amount);
-    save(account.getFileRiferimento(), account.getSaldo());
-    logTransaction("transazioni.txt", account.getIban());
+    saveToAccountFile(account.getFileRiferimento(), account.getSaldo());
+    saveToLogTransaction(TRANSACTIONS_PATH, account.getIban());
 }
 
 //salva solo il saldo aggiornato nel file 
-void Deposit::save(const std::string& filePath, double currentBalance) const {
+void Deposit::saveToAccountFile(const std::string& filePath, double currentBalance) const {
     ofstream outFile(filePath, ios::trunc);  // sovrascrive il file con il nuovo saldo
     if (outFile.is_open()) {
         outFile << currentBalance << endl;
@@ -33,7 +36,7 @@ void Deposit::save(const std::string& filePath, double currentBalance) const {
 }
 
 //scrive nella prima riga disponibile la nuova transazione
-void Deposit::logTransaction(const std::string& filePath, const std::string& iban) const {
+void Deposit::saveToLogTransaction(const std::string& filePath, const std::string& iban) const {
     ofstream outFile(filePath, ios::app);  //apre il file in modalità append
     if (outFile.is_open()) {
         //formattazione della data della transazione
@@ -56,7 +59,7 @@ void Deposit::logTransaction(const std::string& filePath, const std::string& iba
 void Deposit::modifyDescription(const std::string& newDescription) {
     description = newDescription;
     lastModified = std::time(nullptr);  //aggiorna il timestamp dell'ultima modifica
-    updateLogTransaction("transazioni.txt", *this);  
+    updateLogTransaction(TRANSACTIONS_PATH, *this);  
 }
 
 void Deposit::updateLogTransaction(const std::string& filePath, const Transaction& updatedTransaction) {
@@ -84,7 +87,8 @@ void Deposit::updateLogTransaction(const std::string& filePath, const Transactio
         if (logIban == updatedTransaction.getIban() && 
             logTimeStr == to_string(updatedTransaction.getTime()) && 
             logType == updatedTransaction.getType() && 
-            logDesc == updatedTransaction.getDescription()) {
+            logDesc == updatedTransaction.getDescription() &&
+            amountStr == to_string(updatedTransaction.getAmount())) {
             
             // Genera la nuova data dell'ultima modifica
             char bufferLastMod[20];
@@ -97,7 +101,7 @@ void Deposit::updateLogTransaction(const std::string& filePath, const Transactio
             stringstream newLine;
             newLine << logIban << "," 
                     << logType << "," 
-                    << updatedTransaction.getAmount() << "," 
+                    << amountStr << "," 
                     << logTimeStr << "," 
                     << updatedTransaction.getDescription() << "," 
                     << bufferLastMod;

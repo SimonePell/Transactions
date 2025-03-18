@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/main.dir/Account.cpp.o CMakeFiles/main.dir/Deposit.cpp.o CMakeFiles/main.dir/Persona.cpp.o CMakeFiles/main.dir/Withdrawal.cpp.o CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/tests/test_Account.cpp.o CMakeFiles/main.dir/tests/test_Deposit.cpp.o CMakeFiles/main.dir/tests/test_Persona.cpp.o CMakeFiles/main.dir/tests/test_Withdrawal.cpp.o -o main 

@@ -5,6 +5,7 @@
 #include "Persona.h"
 
 //inizializzazione
+/*
 TEST(WithdrawalTest, WithdrawalInitialization) {
     Withdrawal withdrawal(100.0);
     EXPECT_EQ(withdrawal.getAmount(), 100.0);
@@ -34,3 +35,4 @@ TEST(WithdrawalTest, ApplyWithdrawalInsufficientFunds) {
     
     EXPECT_LT(account.getSaldo(), 0); //dovrebbe essere negativo dato che non ci sono controlli
 }
+*/

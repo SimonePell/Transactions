@@ -1,5 +1,5 @@
-CMakeFiles/runTests.dir/tests/test_Persona.cpp.o: \
- /home/simone/Documents/Università/LabProgrammazione/Transactions/tests/test_Persona.cpp \
+CMakeFiles/main.dir/tests/test_Account.cpp.o: \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/tests/test_Account.cpp \
  /usr/include/stdc-predef.h \
  /home/simone/Documents/Università/LabProgrammazione/Transactions/build/_deps/googletest-src/googletest/include/gtest/gtest.h \
  /usr/include/c++/11/cstddef \
@@ -274,4 +274,14 @@ CMakeFiles/runTests.dir/tests/test_Persona.cpp.o: \
  /home/simone/Documents/Università/LabProgrammazione/Transactions/build/_deps/googletest-src/googletest/include/gtest/gtest-typed-test.h \
  /home/simone/Documents/Università/LabProgrammazione/Transactions/build/_deps/googletest-src/googletest/include/gtest/gtest_pred_impl.h \
  /home/simone/Documents/Università/LabProgrammazione/Transactions/build/_deps/googletest-src/googletest/include/gtest/gtest_prod.h \
- /home/simone/Documents/Università/LabProgrammazione/Transactions/Persona.h
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Account.h \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Persona.h \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Transaction.h \
+ /usr/include/c++/11/fstream \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+ /usr/include/c++/11/bits/fstream.tcc \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Persona.h \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Deposit.h \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Account.h \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.h

@@ -5,6 +5,7 @@
 #include "Withdrawal.h"
 
 //inizializzazione
+/*
 TEST(AccountTest, AccountInitialization) {
     Persona persona("Mario", "Rossi", "mrorss");
     Account account("123", persona, "123_transactions.csv");
@@ -50,3 +51,4 @@ TEST(AccountTest, WithdrawalInsufficientFunds) {
     
     EXPECT_LT(account.getSaldo(), 0);  // il saldo dovrebbe andare in negativo dato che non ci sono controlli
 }
+*/

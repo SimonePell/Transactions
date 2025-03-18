@@ -14,15 +14,15 @@ Withdrawal::Withdrawal(double amount, std::string description, std::string iban)
 Withdrawal::Withdrawal(double amount, std::string description, std::time_t timeStamp, std::time_t lastMod, std::string iban)
     : Transaction(amount, std::move(description), timeStamp, lastMod, std::move(iban)) {}
 
-//aggiorna il saldo con save() e salva la transazione nel log con logTransaction()
+//aggiorna il saldo con saveToAccountFile() e salva la transazione nel log con logTransaction()
 void Withdrawal::apply(Account& account) const {
     account.updateSaldo(-amount);
-    save(account.getFileRiferimento(), account.getSaldo());
-    logTransaction("transazioni.txt", account.getIban());
+    saveToAccountFile(account.getFileRiferimento(), account.getSaldo());
+    saveToLogTransaction("transazioni.txt", account.getIban());
 }
 
 //salva solo il saldo aggiornato nel file 
-void Withdrawal::save(const std::string& filePath, double currentBalance) const {
+void Withdrawal::saveToAccountFile(const std::string& filePath, double currentBalance) const {
     ofstream outFile(filePath, ios::trunc);  // sovrascrive il file con il nuovo saldo
     if (outFile.is_open()) {
         outFile << currentBalance << endl;
@@ -33,7 +33,7 @@ void Withdrawal::save(const std::string& filePath, double currentBalance) const 
 }
 
 //scrive la transazione nel logTransactions
-void Withdrawal::logTransaction(const std::string& filePath, const std::string& iban) const {
+void Withdrawal::saveToLogTransaction(const std::string& filePath, const std::string& iban) const {
     ofstream outFile(filePath, ios::app);  //apre il file in modalità append
     if (outFile.is_open()) {
         //formattazione della data della transazione

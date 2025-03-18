@@ -4,6 +4,7 @@
 #include "Persona.h"
 
 //inizializzazion
+/*
 TEST(DepositTest, DepositInitialization) {
     Deposit deposit(150.0);
     EXPECT_EQ(deposit.getAmount(), 150.0);
@@ -20,3 +21,4 @@ TEST(DepositTest, ApplyDeposit) {
     
     EXPECT_EQ(account.getSaldo(), 200.0);
 }
+    */

@@ -14,9 +14,10 @@ const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt";
 namespace fs = std::filesystem;
 
 void accountMenu(Account &account) {
-    int choice;
+    int choice, id;
     double amount;
     std::string desc, newDesc;
+    Transaction* t;
 
     while (true) {
         std::cout << "\n--- Menu Account ---\n";
@@ -35,8 +36,9 @@ void accountMenu(Account &account) {
                 std::cout << "Inserisci l'importo da depositare: ";
                 std::cin >> amount;
                 std::cout << "Inserisci la descrizione del deposito: ";
-                std::cin >> desc;
-                account.addTransaction(new Deposit(amount, desc, account.getIban()));
+                std::cin.ignore(); 
+                std::getline(std::cin, desc);
+                account.addTransaction(std::make_unique<Deposit>(amount, desc, account.getIban())); // Use make_unique
                 std::cout << "Deposito effettuato con successo.\n";
                 break;
 
@@ -45,8 +47,9 @@ void accountMenu(Account &account) {
                 std::cin >> amount;
                 if (account.getSaldo() >= amount) {
                     std::cout << "Inserisci la descrizione del prelievo: ";
-                    std::cin >> desc;
-                    account.addTransaction(new Withdrawal(amount, desc, account.getIban())); 
+                    std::cin.ignore();  
+                    std::getline(std::cin, desc);
+                    account.addTransaction(std::make_unique<Withdrawal>(amount, desc, account.getIban())); // Use make_unique
                     std::cout << "Prelievo effettuato con successo.\n";
                 } else {
                     std::cout << "Soldi insufficienti.\n";
@@ -57,28 +60,29 @@ void accountMenu(Account &account) {
                 std::cout << "Saldo attuale: " << account.getSaldo() << "\n";
                 break;
 
-            case 4:
-                std::cout<< "transazioni modificabili: \n";
+            /*case 4:
+                std::cout << "Transazioni modificabili: \n";
                 account.printTransactions();
-                std::cout << "inserisci l'id della transazione da modificare";
-                int ide;
-                std::cin >> ide;
-                Transaction* t = account.findTransactionByIndex(ide);
-                std::cout << "inserisci la nuova descrizione: ";
-                std::cin >> newDesc;
-                t->modifyDescription(newDesc);
-                break;
-
-            case 5:
-                std::cout << "transazioni eliminabili: \n";
-                account.printTransactions();
-                std::cout << "inserisci l'id della transazione da eliminare";
-                int id;
+                std::cout << "Inserisci l'id della transazione da modificare: ";
                 std::cin >> id;
-                Transaction* t = account.findTransactionByIndex(id);
-                std::cout << "è stata elmiinata la transazione: " << t->getDescription();
+                t = account.findTransactionByIndex(id);
+                if (t) {
+                    std::cout << "Inserisci la nuova descrizione: ";
+                    std::cin.ignore();  
+                    std::getline(std::cin, newDesc);
+                    t->modifyDescription(newDesc);
+                } else {
+                    std::cout << "Errore: ID transazione non valido.\n";
+                }
+                break;*/
+
+            /*case 5:
+                std::cout << "Transazioni eliminabili: \n";
+                account.printTransactions();
+                std::cout << "Inserisci l'id della transazione da eliminare: ";
+                std::cin >> id;
                 account.deleteTransaction(id);
-                break;
+                break;*/
 
             case 6:
                 account.printTransactions();
@@ -92,6 +96,7 @@ void accountMenu(Account &account) {
         }
     }
 }
+
 
 int main() {
     std::string iban, nome, cognome, codicefiscale;
@@ -132,7 +137,7 @@ int main() {
                 {
                     Persona persona(nome, cognome, codicefiscale);
                     Account account(iban, persona, "TRANSACTION/Accounts/" + iban + "_transactions.csv");
-                    account.saveToFile();
+                    account.saveToAccountFile();
                     std::cout << "Account creato con successo.\n";
                     accountMenu(account);
                 }

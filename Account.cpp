@@ -8,31 +8,41 @@
 #include <filesystem>
 #include <cctype>
 #include <algorithm>
+#include <memory>
 
 namespace fs = std::filesystem;
+const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt"; 
 
 Account::Account(const std::string& iban, const Persona& intestatario, const std::string& fileRiferimento)
-    : iban(iban), intestatario(intestatario), fileRiferimento(fileRiferimento), saldo(0) {}
-
-Account::~Account() {
-    for (Transaction* t : transazioni) {
-        delete t;
-    }
-    transazioni.clear();
+: iban(iban), intestatario(intestatario), fileRiferimento(fileRiferimento), saldo(0) 
+{
+std::cout << "DEBUG: Account created with IBAN " << iban << std::endl;
 }
 
-// applica la transazione e salva lo stato aggiornato dell'account nel file
-void Account::addTransaction(Transaction* transaction) {
+
+Account::~Account() {}
+
+
+void Account::addTransaction(std::unique_ptr<Transaction> transaction) {
     transaction->apply(*this);
-    transazioni.push_back(transaction); // Manteniamo il puntatore nella lista
-    saveToFile();
+    std::ofstream file(TRANSACTIONS_PATH, std::ios::app);
+    if (file.is_open()) {
+        transaction->saveToLogTransaction(TRANSACTIONS_PATH, iban);
+        file.close();
+    } else {
+        throw std::runtime_error("Errore: impossibile aprire il file per salvare la transazione.");
+    }
+    saveToAccountFile();
 }
+
 
 void Account::updateSaldo(double amount) {
     saldo += amount;
 }
 
-void Account::saveToFile() const {
+
+void Account::saveToAccountFile() const {
+    //salva i dati dell'account nel file
     std::ofstream file(fileRiferimento, std::ios::trunc); //apertura file in modalità scrittura
     if (file.is_open()) {
         file << iban << "\n"
@@ -46,8 +56,11 @@ void Account::saveToFile() const {
     }
 }
 
-//restituisce un oggetto Account costruito con i dati letti dal file 
+
+
+
 Account Account::loadFromFile(const std::string& filePath) {
+    //restituisce un oggetto Account costruito con i dati letti dal file 
     std::ifstream file(filePath);
     std::string iban, nome, cognome, codicefiscale;
     double saldo;
@@ -66,11 +79,122 @@ Account Account::loadFromFile(const std::string& filePath) {
 
         file.close();
 
+        std::cout << "account caricato con successo: " << iban << " (Saldo: " << saldo << ")\n";
         return account; 
     } else {
-        throw std::runtime_error("Errore durante la lettura del file dell'account.");
+        throw std::runtime_error("Errore: impossibile aprire il file dell'account: " + filePath);
     }
 }
+
+
+
+
+
+
+void Account::deleteTransaction() {
+    printTransactions();
+    
+    std::cout << "Inserisci l'indice della transazione da eliminare: ";
+    int index;
+    std::cin >> index;
+    
+    std::ifstream file(TRANSACTIONS_PATH);
+    if (!file.is_open()) {
+        throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
+    }
+    
+    std::vector<std::string> lines;
+    std::string line;
+    int currentIndex = 0;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string transIban;
+        std::getline(iss, transIban, ',');
+        if (!(transIban == iban && currentIndex == index)) {
+            lines.push_back(line);
+        }
+        currentIndex++;
+    }
+    file.close();
+    
+    std::ofstream outFile(TRANSACTIONS_PATH, std::ios::trunc);
+    if (!outFile.is_open()) {
+        throw std::runtime_error("Errore nell'apertura del file per la scrittura.");
+    }
+    for (const std::string& l : lines) {
+        outFile << l << "\n";
+    }
+    outFile.close();
+    
+    std::cout << "Transazione eliminata con successo.\n";
+}
+
+
+void Account::deleteTransactionFromLog(const std::string& filePath, Transaction* t) {
+    //elimina la transazione dal file delle transazioni
+    std::ifstream inFile(filePath);
+    if (!inFile.is_open()) {
+        throw std::runtime_error("Errore: impossibile aprire il file " + filePath);
+    }
+
+    std::vector<std::string> lines;
+    std::string line;
+    bool found = false;
+
+    while (std::getline(inFile, line)) {
+        std::istringstream ss(line);
+        std::string logIban, logType, amountStr, logTimeStr, logDesc, lastModStr;
+
+        std::getline(ss, logIban, ',');
+        std::getline(ss, logType, ',');
+        std::getline(ss, amountStr, ',');
+        std::getline(ss, logTimeStr, ',');
+        std::getline(ss, logDesc, ',');
+        std::getline(ss, lastModStr);
+
+        if (logIban == t->getIban() && logType == t->getType() && logDesc == t->getDescription()) {
+            found = true;
+        } else {
+            lines.push_back(line);
+        }
+    }
+    inFile.close();
+
+    if (!found) {
+        throw std::runtime_error("Errore: transazione non trovata nel file.");
+    }
+
+    std::ofstream outFile(filePath, std::ios::trunc);
+    if (!outFile.is_open()) {
+        throw std::runtime_error("Errore: impossibile aprire il file " + filePath);
+    }
+
+    for (const std::string& l : lines) {
+        outFile << l << "\n";
+    }
+    outFile.close();
+}
+
+
+void Account::printTransactions() const {
+    std::ifstream file(TRANSACTIONS_PATH);
+    if (!file.is_open()) {
+        throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
+    }
+
+    std::string line;
+    int index = 0;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string transIban;
+        std::getline(iss, transIban, ',');
+        if (transIban == iban) {
+            std::cout << index++ << ". " << line << "\n";
+        }
+    }
+    file.close();
+}
+
 
 double Account::getSaldo() const { return saldo; }
 std::string Account::getIban() const { return iban; }
@@ -78,137 +202,3 @@ std::string Account::getNome() const { return intestatario.getNome(); }
 std::string Account::getCognome() const { return intestatario.getCognome(); }
 std::string Account::getCodicefiscale() const { return intestatario.getCodicefiscale(); }
 std::string Account::getFileRiferimento() const { return fileRiferimento; }
-
-
-
-void Account::getTransactions(const std::string& transactionsFilePath) {
-    std::ifstream transFile(transactionsFilePath);
-    if (!transFile.is_open()) {
-        throw std::runtime_error("Errore nell'apertura del file delle transazioni: " + transactionsFilePath);
-    }
-
-    std::string line;
-
-    while (std::getline(transFile, line)) {
-        std::istringstream iss(line);
-        std::string transIban, type, amountStr, dateTimeStr, desc, lastModStr;
-        double amount;
-
-        //lettura dei campi separati
-        std::getline(iss, transIban, ',');
-        std::getline(iss, type, ',');
-        std::getline(iss, amountStr, ',');
-        std::getline(iss, dateTimeStr, ',');
-        std::getline(iss, desc, ',');
-        std::getline(iss, lastModStr, ',');
-
-        try {
-            amount = std::stod(amountStr);
-        } catch (const std::invalid_argument&) {
-            std::cerr << "Errore: impossibile convertire l'importo in numero: " << amountStr << std::endl;
-            continue; // Salta questa transazione
-        }
-
-        // Conversione della data e ora 
-        std::tm timeinfo = {};
-        std::istringstream dateStream(dateTimeStr);
-        dateStream >> std::get_time(&timeinfo, "%Y-%m-%d %H:%M:%S");
-        std::time_t timeStamp = mktime(&timeinfo);
-
-        if (timeStamp == -1) {
-            std::cerr << "Errore: impossibile convertire la data e ora: " << dateTimeStr << std::endl;
-            continue;
-        }
-
-        // Conversione della data e ora 
-        std::tm lastModInfo = {};
-        std::istringstream lastModStream(lastModStr);
-        lastModStream >> std::get_time(&lastModInfo, "%Y-%m-%d %H:%M:%S");
-        std::time_t lastModified = mktime(&lastModInfo);
-
-        if (lastModified == -1) {
-            std::cerr << "Errore: impossibile convertire la data dell'ultima modifica: " << lastModStr << std::endl;
-            continue;
-        }
-
-        //carica solo le transazioni con IBAN corrispondente
-        if (transIban == iban) {
-            if (type == "Deposit") {
-                addTransaction(new Deposit(amount, desc, timeStamp, lastModified, transIban));
-            } else if (type == "Withdrawal") {
-                addTransaction(new Withdrawal(amount, desc, timeStamp, lastModified, transIban));
-            } else {
-                std::cerr << "Errore: tipo di transazione sconosciuto: " << type << std::endl;
-            }
-        }
-    }
-    transFile.close();
-}
-
-
-//trova la transazione tramite la descrizione, è case-insesitive e utilizza la ricerca parziale
-std::vector<Transaction*> Account::findTransactionsByDescription(const std::string& desc) const {
-    std::vector<Transaction*> results;
-
-    auto caseInsensitiveFind = [](const std::string& text, const std::string& pattern) {
-        return std::search(text.begin(), text.end(), pattern.begin(), pattern.end(),
-                           [](char c1, char c2) { return std::tolower(c1) == std::tolower(c2); }) != text.end();
-    };
-
-    for (Transaction* t : transazioni) {
-        if (caseInsensitiveFind(t->getDescription(), desc)) {
-            results.push_back(t);  // Aggiunge la transazione trovata al vettore dei risultati
-        }
-    }
-
-    return results;
-}
-
-std::vector<Transaction*> Account::findTransactionsByDate(const std::string& date) const {
-    std::vector<Transaction*> results;
-    for (Transaction* t : transazioni) {
-        std::time_t time = t->getTime();
-        char buffer[11];
-        struct tm* timeinfo = localtime(&time);
-        strftime(buffer, sizeof(buffer), "%Y-%m-%d", timeinfo);
-
-        if (date == buffer) {
-            results.push_back(t);
-        }
-    }
-    return results;
-}
-
-//elimina una transazione
-void Account::deleteTransaction(int id) {
-    if (id < 0 || id >= transazioni.size()) {
-        std::cout << "Errore: Indice fuori dall'intervallo valido.\n";
-        return;
-    }
-
-    Transaction* t = transazioni[id];
-    updateSaldo(-t->getAmount());
-    transazioni.erase(transazioni.begin() + id);
-    saveToFile();
-}
-
-//stampa le transazioni
-void Account::printTransactions() const {
-    int index = 1;
-    for (const Transaction* t : transazioni) {
-        std::cout << "Tipo: " << t->getType() << " | Importo: " << t->getAmount() 
-                  << " | Descrizione: " << t->getDescription() << "\n";
-        index++;
-    }
-}
-
-//restituisce la transazione in base all'indice
-Transaction* Account::findTransactionByIndex(int index) const {
-    if (index < 0 || index >= transazioni.size()) {
-        std::cout << "Errore: Indice fuori dall'intervallo valido.\n";
-        return nullptr; // Ritorna nullptr se l'indice è invalido
-    }
-
-    return transazioni[index]; // Ritorna il puntatore alla transazione richiesta
-}
-

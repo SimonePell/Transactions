@@ -4,6 +4,8 @@
 #include "Transaction.h"
 #include "Account.h"
 #include <string>
+#include <ctime>
+#include <memory>
 
 class Withdrawal : public Transaction {
 public:
@@ -15,8 +17,8 @@ public:
 
     //funzioni utilizzate per una nuova transazione
     void apply(Account& account) const override;
-    void save(const std::string& filePath, double currentBalance) const override;
-    void logTransaction(const std::string& filePath, const std::string& iban )const{}
+    void saveToAccountFile(const std::string& filePath, double currentBalance) const override;
+    void saveToLogTransaction(const std::string& filePath, const std::string& iban )const;
 
     //funzioni utilizzate per modificare una transazione
     void modifyDescription(const std::string& newDescription) override;
@@ -24,6 +26,8 @@ public:
 
     std::string getType() const override { return "Deposit"; }
     double getAmount() const override { return amount; }
+
+    std::unique_ptr<Transaction> clone() const override {return std::make_unique<Withdrawal>(*this);  /*Deep copy*/ }
 };
 
 #endif 

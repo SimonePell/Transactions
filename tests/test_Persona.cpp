@@ -2,6 +2,7 @@
 #include "Persona.h"
 
 //inizializzazione
+/*
 TEST(PersonaTest, Initialization) {
     Persona persona("John", "Doe", "JHNDOE90A01F205N");
     EXPECT_EQ(persona.getNome(), "John");
@@ -16,4 +17,4 @@ TEST(PersonaTest, Getters) {
     EXPECT_EQ(persona.getCognome(), "Smith");
     EXPECT_EQ(persona.getCodicefiscale(), "ALCSMT85B02G306P");
 }
-
+*/

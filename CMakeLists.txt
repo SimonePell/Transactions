@@ -9,13 +9,8 @@ enable_testing()
 # Include directories for headers
 include_directories(${CMAKE_SOURCE_DIR})
 
-# Gather all source files **EXCEPT** CMake auto-generated files and main.cpp
+# Gather all source files **except** `CMakeFiles`-generated files
 file(GLOB_RECURSE SOURCES ${CMAKE_SOURCE_DIR}/*.cpp)
-
-# Exclude main.cpp (not needed for testing)
-list(REMOVE_ITEM SOURCES ${CMAKE_SOURCE_DIR}/main.cpp)
-
-# Exclude CMake-generated files (CompilerIdCXX)
 list(FILTER SOURCES EXCLUDE REGEX "CMakeFiles/.*CompilerIdCXX.*")
 
 # Ensure GoogleTest is fetched
@@ -26,10 +21,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# Create test executable with `test_main.cpp`
-add_executable(runTests ${SOURCES} tests/test_main.cpp tests/test_Account.cpp tests/test_Deposit.cpp tests/test_Withdrawal.cpp)
+# Ensure GoogleTest include directories are available
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-# Link Google Test
+# **🔥 Create the main executable (without test files)**
+list(REMOVE_ITEM SOURCES ${CMAKE_SOURCE_DIR}/tests/test_main.cpp)  # Exclude test_main.cpp
+add_executable(main ${SOURCES} main.cpp)  # Now, main.cpp is only for `main`
+
+# **🔥 Create the test executable separately**
+add_executable(runTests tests/test_main.cpp tests/test_Account.cpp tests/test_Deposit.cpp tests/test_Withdrawal.cpp)
 target_link_libraries(runTests PRIVATE gtest gtest_main pthread)
 
 # Register test with CTest
