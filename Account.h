@@ -32,13 +32,12 @@ public:
     std::string getCognome() const;
     std::string getCodicefiscale() const;
     std::string getFileRiferimento() const;
-    double getSaldo() const; 
+    double getSaldo() const;
+    bool hasTransactions() const; 
     
     static Account loadFromFile(const std::string& filePath);
 
-
-    void deleteTransaction();
-    void deleteTransactionFromLog(const std::string& filePath, Transaction* t);
+    void deleteTransactionByIndex(int index);
     
     void printTransactions() const;
 };

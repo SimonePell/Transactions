@@ -35,6 +35,16 @@ void accountMenu(Account &account) {
             case 1: 
                 std::cout << "Inserisci l'importo da depositare: ";
                 std::cin >> amount;
+                if(amount < 0){
+                    std::cout << "Errore: importo non valido.\n";
+                    std::cout << "Deposito non effettuato.\n";
+                    break;
+                }
+                if(amount == 0){
+                    std::cout << "Errore: importo non valido.\n";
+                    std::cout << "Deposito non effettuato.\n";
+                    break;
+                }
                 std::cout << "Inserisci la descrizione del deposito: ";
                 std::cin.ignore(); 
                 std::getline(std::cin, desc);
@@ -61,28 +71,42 @@ void accountMenu(Account &account) {
                 break;
 
             /*case 4:
-                std::cout << "Transazioni modificabili: \n";
-                account.printTransactions();
-                std::cout << "Inserisci l'id della transazione da modificare: ";
-                std::cin >> id;
-                t = account.findTransactionByIndex(id);
-                if (t) {
-                    std::cout << "Inserisci la nuova descrizione: ";
-                    std::cin.ignore();  
-                    std::getline(std::cin, newDesc);
-                    t->modifyDescription(newDesc);
-                } else {
-                    std::cout << "Errore: ID transazione non valido.\n";
-                }
-                break;*/
-
-            /*case 5:
                 std::cout << "Transazioni eliminabili: \n";
                 account.printTransactions();
                 std::cout << "Inserisci l'id della transazione da eliminare: ";
                 std::cin >> id;
                 account.deleteTransaction(id);
                 break;*/
+
+            case 5:
+                if(account.hasTransactions() == false){
+                    std::cout << "Errore: Nessuna transazione trovata per questo account.\n";
+                    break;
+                }   
+                account.printTransactions();
+
+                int index;
+                std::cout << "Inserisci l'indice della transazione da eliminare: ";
+                
+                while (true) {
+                    std::cin >> index;
+                
+                    // Check if input is a valid integer and greater than or equal to 0
+                    if (std::cin.fail() || index < 0) {
+                        std::cin.clear(); // Clear error state
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                        std::cout << "Errore: Inserisci un numero intero valido (>= 0): ";
+                    } else {
+                        break; // Valid input, exit loop
+                    }
+                }
+                
+                try {
+                    account.deleteTransactionByIndex(index);
+                } catch (const std::exception& e) {
+                    std::cerr << "Errore: " << e.what() << std::endl;
+                }
+                break;
 
             case 6:
                 account.printTransactions();
