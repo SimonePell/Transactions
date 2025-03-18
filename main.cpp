@@ -24,10 +24,11 @@ void accountMenu(Account &account) {
         std::cout << "1. Effettua un deposito\n";
         std::cout << "2. Effettua un prelievo\n";
         std::cout << "3. Visualizza saldo\n"; 
-        std::cout << "4. Modifica Transazione\n";
+        std::cout << "4. Cerca Transazione\n";
         std::cout << "5. Elimina Transazione\n";
         std::cout << "6. Visualizza Transazioni\n";
-        std::cout << "7. Esci dall'account\n";
+        std::cout << "7. modifica descrizione\n";
+        std::cout << "8. Esci dall'account\n";
         std::cout << "Scegli: ";
         std::cin >> choice;
 
@@ -35,12 +36,7 @@ void accountMenu(Account &account) {
             case 1: 
                 std::cout << "Inserisci l'importo da depositare: ";
                 std::cin >> amount;
-                if(amount < 0){
-                    std::cout << "Errore: importo non valido.\n";
-                    std::cout << "Deposito non effettuato.\n";
-                    break;
-                }
-                if(amount == 0){
+                if(amount <= 0){
                     std::cout << "Errore: importo non valido.\n";
                     std::cout << "Deposito non effettuato.\n";
                     break;
@@ -55,64 +51,71 @@ void accountMenu(Account &account) {
             case 2:
                 std::cout << "Inserisci l'importo da prelevare: ";
                 std::cin >> amount;
-                if (account.getSaldo() >= amount) {
-                    std::cout << "Inserisci la descrizione del prelievo: ";
-                    std::cin.ignore();  
-                    std::getline(std::cin, desc);
-                    account.addTransaction(std::make_unique<Withdrawal>(amount, desc, account.getIban())); // Use make_unique
-                    std::cout << "Prelievo effettuato con successo.\n";
-                } else {
-                    std::cout << "Soldi insufficienti.\n";
+                if(amount <= 0){
+                    std::cout << "Errore: importo non valido.\n";
+                    std::cout << "Prelievo non effettuato.\n";
+                    break;
                 }
+                std::cout <<"Inserire la descrizone del prelievo: ";
+                std::cin.ignore();
+                std::getline(std::cin, desc);
+                account.addTransaction(std::make_unique<Withdrawal>(amount, desc, account.getIban()));
+                std::cout << "Prelievo effettuato con successo.\n";
                 break;
-
+            
             case 3:
-                std::cout << "Saldo attuale: " << account.getSaldo() << "\n";
+                std::cout << "Il saldo dell'account è: " << account.getSaldo();
                 break;
 
-            /*case 4:
-                std::cout << "Transazioni eliminabili: \n";
-                account.printTransactions();
-                std::cout << "Inserisci l'id della transazione da eliminare: ";
-                std::cin >> id;
-                account.deleteTransaction(id);
-                break;*/
+            case 4:
+                std::cout << "Inserisci una parola/descrizione o una data: ";
+                std::cin.ignore();
+                std::getline(std::cin, desc);
+                account.searchTransaction(desc);
+                break;
 
             case 5:
                 if(account.hasTransactions() == false){
                     std::cout << "Errore: Nessuna transazione trovata per questo account.\n";
                     break;
                 }   
-                account.printTransactions();
-
-                int index;
-                std::cout << "Inserisci l'indice della transazione da eliminare: ";
-                
-                while (true) {
-                    std::cin >> index;
-                
-                    // Check if input is a valid integer and greater than or equal to 0
-                    if (std::cin.fail() || index < 0) {
-                        std::cin.clear(); // Clear error state
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-                        std::cout << "Errore: Inserisci un numero intero valido (>= 0): ";
-                    } else {
-                        break; // Valid input, exit loop
-                    }
-                }
-                
-                try {
-                    account.deleteTransactionByIndex(index);
-                } catch (const std::exception& e) {
-                    std::cerr << "Errore: " << e.what() << std::endl;
+                std::cout << "Digitare 1 per eliminare una transazione per indice, 2 per eliminare una transazione per descrizione o data: ";
+                std::cin >> choice;
+                if(choice == 1){
+                    std::cout << "Inserisci l'indice della transazione da eliminare: ";
+                    std::cin >> id;
+                    account.deleteTransactionByIndex(id);
+                }else if(choice == 2){
+                    std::cout << "Inserisci la descrizione o data della transazione da eliminare: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, desc);
+                    account.deleteTransactionBySearch(desc);
+                }else{
+                    std::cout << "Scelta non valida.\n";
                 }
                 break;
 
             case 6:
                 account.printTransactions();
                 break;
-
+            
             case 7:
+                std::cout << "Digitare 1 per modificare una transazione per indice, 2 per modificare una transazione per descrizione o data: ";
+                std::cin >> choice;
+                if(choice == 1){
+                    std::cout << "Inserisci l'indice della transazione da modificare: ";
+                    std::cin >> id;
+                    account.modifyTransactionByIndex(id);
+                }else if(choice == 2){
+                    std::cout << "Inserisci la descrizione o data della transazione da modificare: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, desc);
+                    account.modifyTransactionBySearch(desc);
+                }else{
+                    std::cout << "Scelta non valida.\n";
+                }
+                break;
+            case 8:
                 return;
 
             default:

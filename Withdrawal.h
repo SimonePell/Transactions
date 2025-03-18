@@ -24,7 +24,7 @@ public:
     void modifyDescription(const std::string& newDescription) override;
     void updateLogTransaction(const std::string& filePath, const Transaction& updatedTransaction);
 
-    std::string getType() const override { return "Deposit"; }
+    std::string getType() const override { return "Withdrawal"; }
     double getAmount() const override { return amount; }
 
     std::unique_ptr<Transaction> clone() const override {return std::make_unique<Withdrawal>(*this);  /*Deep copy*/ }

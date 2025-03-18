@@ -5,6 +5,8 @@
 #include <sstream>
 
 using namespace std;
+const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt"; 
+
 
 //costruttore nuova transazione
 Withdrawal::Withdrawal(double amount, std::string description, std::string iban)
@@ -18,7 +20,7 @@ Withdrawal::Withdrawal(double amount, std::string description, std::time_t timeS
 void Withdrawal::apply(Account& account) const {
     account.updateSaldo(-amount);
     saveToAccountFile(account.getFileRiferimento(), account.getSaldo());
-    saveToLogTransaction("transazioni.txt", account.getIban());
+    saveToLogTransaction(TRANSACTIONS_PATH, account.getIban());
 }
 
 //salva solo il saldo aggiornato nel file 

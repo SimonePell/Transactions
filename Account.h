@@ -37,7 +37,13 @@ public:
     
     static Account loadFromFile(const std::string& filePath);
 
+    void modifyTransactionByIndex(int index);
+    void modifyTransactionBySearch(const std::string& query);
+
+    void searchTransaction(const std::string& query) const;
+
     void deleteTransactionByIndex(int index);
+    void deleteTransactionBySearch(const std::string& query);
     
     void printTransactions() const;
 };

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <sstream>
 
-
 using namespace std;
 const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt"; 
 

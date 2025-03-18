@@ -25,13 +25,6 @@ Account::~Account() {}
 
 void Account::addTransaction(std::unique_ptr<Transaction> transaction) {
     transaction->apply(*this);
-    std::ofstream file(TRANSACTIONS_PATH, std::ios::app);
-    if (file.is_open()) {
-        transaction->saveToLogTransaction(TRANSACTIONS_PATH, iban);
-        file.close();
-    } else {
-        throw std::runtime_error("Errore: impossibile aprire il file per salvare la transazione.");
-    }
     saveToAccountFile();
 }
 
@@ -85,6 +78,198 @@ Account Account::loadFromFile(const std::string& filePath) {
         throw std::runtime_error("Errore: impossibile aprire il file dell'account: " + filePath);
     }
 }
+
+
+void Account::searchTransaction(const std::string& query) const {
+    if (!hasTransactions()) {
+        std::cout << "Errore: Nessuna transazione trovata per questo account.\n";
+        return;
+    }
+
+    std::ifstream file(TRANSACTIONS_PATH);
+    if (!file.is_open()) {
+        throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
+    }
+
+    std::string line;
+    bool found = false;
+    int index = 0;
+
+    // Convert query to lowercase for case-insensitive comparison
+    std::string queryLower = query;
+    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), ::tolower);
+
+    std::cout << "Risultati della ricerca per \"" << query << "\":\n";
+
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string transIban, transType, amountStr, logTimeStr, logDesc, lastModStr;
+
+        std::getline(iss, transIban, ',');
+        std::getline(iss, transType, ',');
+        std::getline(iss, amountStr, ',');
+        std::getline(iss, logTimeStr, ',');
+        std::getline(iss, logDesc, ',');
+        std::getline(iss, lastModStr);
+
+        // Check if transaction belongs to this account
+        if (transIban == iban) {
+            // Convert date and description to lowercase for comparison
+            std::string logTimeLower = logTimeStr;
+            std::string logDescLower = logDesc;
+            std::transform(logTimeLower.begin(), logTimeLower.end(), logTimeLower.begin(), ::tolower);
+            std::transform(logDescLower.begin(), logDescLower.end(), logDescLower.begin(), ::tolower);
+
+            // Perform case-insensitive partial matching
+            if (logTimeLower.find(queryLower) != std::string::npos || logDescLower.find(queryLower) != std::string::npos) {
+                std::cout << index++ << ". " << line << "\n";
+                found = true;
+            }
+        }
+    }
+
+    file.close();
+
+    if (!found) {
+        std::cout << "Nessuna transazione trovata con il criterio: " << query << "\n";
+    }
+}
+
+
+void Account::modifyTransactionByIndex(int index) {
+    if (!hasTransactions()) {
+        std::cout << "Errore: Nessuna transazione disponibile per la modifica.\n";
+        return;
+    }
+
+    std::ifstream file(TRANSACTIONS_PATH);
+    if (!file.is_open()) {
+        throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
+    }
+
+    std::vector<std::string> lines;
+    std::string line;
+    int currentIndex = 0;
+    bool found = false;
+
+    std::string newDescription;
+    std::time_t now = std::time(nullptr);
+    char buffer[20];
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+    std::string lastModTime = buffer;
+
+    std::cout << "Inserisci la nuova descrizione: ";
+    std::cin.ignore();
+    std::getline(std::cin, newDescription);
+
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string transIban, transType, amountStr, logTimeStr, logDesc, lastModStr;
+
+        std::getline(iss, transIban, ',');
+        std::getline(iss, transType, ',');
+        std::getline(iss, amountStr, ',');
+        std::getline(iss, logTimeStr, ',');
+        std::getline(iss, logDesc, ',');
+        std::getline(iss, lastModStr);
+
+        if (transIban == iban && currentIndex == index) {
+            found = true;
+            line = transIban + "," + transType + "," + amountStr + "," + logTimeStr + "," + newDescription + "," + lastModTime;
+        }
+        lines.push_back(line);
+        currentIndex++;
+    }
+    file.close();
+
+    if (!found) {
+        std::cout << "Errore: Indice non valido.\n";
+        return;
+    }
+
+    std::ofstream outFile(TRANSACTIONS_PATH, std::ios::trunc);
+    if (!outFile.is_open()) {
+        throw std::runtime_error("Errore nell'apertura del file per la scrittura.");
+    }
+    for (const auto& l : lines) {
+        outFile << l << "\n";
+    }
+    outFile.close();
+
+    std::cout << "Descrizione modificata con successo!\n";
+}
+void Account::modifyTransactionBySearch(const std::string& query) {
+    if (!hasTransactions()) {
+        std::cout << "Errore: Nessuna transazione disponibile per la modifica.\n";
+        return;
+    }
+
+    std::ifstream file(TRANSACTIONS_PATH);
+    if (!file.is_open()) {
+        throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
+    }
+
+    std::vector<std::string> matchingTransactions;
+    std::vector<int> matchingIndexes;
+    std::string line;
+    int originalIndex = 0;
+    int displayIndex = 0;
+
+    std::string queryLower = query;
+    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), ::tolower);
+
+    std::cout << "Risultati della ricerca per \"" << query << "\":\n";
+
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string transIban, transType, amountStr, logTimeStr, logDesc, lastModStr;
+
+        std::getline(iss, transIban, ',');
+        std::getline(iss, transType, ',');
+        std::getline(iss, amountStr, ',');
+        std::getline(iss, logTimeStr, ',');
+        std::getline(iss, logDesc, ',');
+        std::getline(iss, lastModStr);
+
+        if (transIban == iban) {
+            std::string logTimeLower = logTimeStr;
+            std::string logDescLower = logDesc;
+            std::transform(logTimeLower.begin(), logTimeLower.end(), logTimeLower.begin(), ::tolower);
+            std::transform(logDescLower.begin(), logDescLower.end(), logDescLower.begin(), ::tolower);
+
+            if (logTimeLower.find(queryLower) != std::string::npos || logDescLower.find(queryLower) != std::string::npos) {
+                std::cout << displayIndex << ". " << line << "\n";
+                matchingTransactions.push_back(line);
+                matchingIndexes.push_back(originalIndex);
+                displayIndex++;
+            }
+        }
+        originalIndex++;
+    }
+    file.close();
+
+    if (matchingTransactions.empty()) {
+        std::cout << "Nessuna transazione trovata con il criterio: " << query << "\n";
+        return;
+    }
+
+    int selectedIndex;
+    std::cout << "Inserisci l'indice della transazione da modificare: ";
+    while (true) {
+        std::cin >> selectedIndex;
+        if (std::cin.fail() || selectedIndex < 0 || selectedIndex >= (int)matchingIndexes.size()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Errore: Inserisci un numero valido tra 0 e " << matchingIndexes.size() - 1 << ": ";
+        } else {
+            break;
+        }
+    }
+
+    // Call modifyTransactionByIndex using the real file index
+    modifyTransactionByIndex(matchingIndexes[selectedIndex]);
+}
+
 
 
 void Account::deleteTransactionByIndex(int index) {
@@ -147,6 +332,83 @@ void Account::deleteTransactionByIndex(int index) {
     outFile.close();
 
     std::cout << "Transazione eliminata con successo e saldo aggiornato.\n";
+}
+void Account::deleteTransactionBySearch(const std::string& query) {
+    if (!hasTransactions()) {
+        std::cout << "Errore: Nessuna transazione disponibile per l'eliminazione.\n";
+        return;
+    }
+
+    std::ifstream file(TRANSACTIONS_PATH);
+    if (!file.is_open()) {
+        throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
+    }
+
+    std::vector<std::string> matchingTransactions;
+    std::vector<int> matchingIndexes;
+    std::string line;
+    int originalIndex = 0;
+    int displayIndex = 0;
+
+    // Convert query to lowercase for case-insensitive comparison
+    std::string queryLower = query;
+    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), ::tolower);
+
+    std::cout << "Risultati della ricerca per \"" << query << "\":\n";
+
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string transIban, transType, amountStr, logTimeStr, logDesc, lastModStr;
+
+        std::getline(iss, transIban, ',');
+        std::getline(iss, transType, ',');
+        std::getline(iss, amountStr, ',');
+        std::getline(iss, logTimeStr, ',');
+        std::getline(iss, logDesc, ',');
+        std::getline(iss, lastModStr);
+
+        // Check if transaction belongs to this account
+        if (transIban == iban) {
+            // Convert date and description to lowercase for comparison
+            std::string logTimeLower = logTimeStr;
+            std::string logDescLower = logDesc;
+            std::transform(logTimeLower.begin(), logTimeLower.end(), logTimeLower.begin(), ::tolower);
+            std::transform(logDescLower.begin(), logDescLower.end(), logDescLower.begin(), ::tolower);
+
+            // Perform case-insensitive partial matching
+            if (logTimeLower.find(queryLower) != std::string::npos || logDescLower.find(queryLower) != std::string::npos) {
+                std::cout << displayIndex << ". " << line << "\n";
+                matchingTransactions.push_back(line);
+                matchingIndexes.push_back(originalIndex);
+                displayIndex++;
+            }
+        }
+        originalIndex++; // Increment the real index in the file
+    }
+
+    file.close();
+
+    if (matchingTransactions.empty()) {
+        std::cout << "Nessuna transazione trovata con il criterio: " << query << "\n";
+        return;
+    }
+
+    // Ask the user for the index to delete
+    int selectedIndex;
+    std::cout << "Inserisci l'indice della transazione da eliminare: ";
+    while (true) {
+        std::cin >> selectedIndex;
+        if (std::cin.fail() || selectedIndex < 0 || selectedIndex >= (int)matchingIndexes.size()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Errore: Inserisci un numero valido tra 0 e " << matchingIndexes.size() - 1 << ": ";
+        } else {
+            break;
+        }
+    }
+
+    // Delete the transaction using its actual index in the file
+    deleteTransactionByIndex(matchingIndexes[selectedIndex]);
 }
 
 
