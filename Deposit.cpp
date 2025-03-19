@@ -5,7 +5,6 @@
 #include <sstream>
 
 using namespace std;
-const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt"; 
 
 
 //costruttore nuova transazione
@@ -17,10 +16,10 @@ Deposit::Deposit(double amount, std::string description, std::time_t timeStamp, 
     : Transaction(amount, std::move(description), timeStamp, lastMod, std::move(iban)) {}
 
 //aggiorna il saldo con saveToAccountFile() e salva la transazione nel log con logTransaction()
-void Deposit::apply(Account& account) const {
+void Deposit::apply(Account& account, const std::string& filePath) const {
     account.updateSaldo(amount);
     saveToAccountFile(account.getFileRiferimento(), account.getSaldo());
-    saveToLogTransaction(TRANSACTIONS_PATH, account.getIban());
+    saveToLogTransaction(filePath, account.getIban());
 }
 
 //salva solo il saldo aggiornato nel file 
@@ -55,10 +54,15 @@ void Deposit::saveToLogTransaction(const std::string& filePath, const std::strin
     }
 }
 
-void Deposit::modifyDescription(const std::string& newDescription) {
+bool Deposit::modifyDescription(const std::string& newDescription, const std::string& filePath) {
     description = newDescription;
     lastModified = std::time(nullptr);  //aggiorna il timestamp dell'ultima modifica
-    updateLogTransaction(TRANSACTIONS_PATH, *this);  
+    try {
+        updateLogTransaction(filePath, *this);
+        return true; 
+    } catch (const std::exception& e) {
+        return false; 
+    } 
 }
 
 void Deposit::updateLogTransaction(const std::string& filePath, const Transaction& updatedTransaction) {

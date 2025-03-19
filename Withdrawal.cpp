@@ -3,9 +3,9 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 using namespace std;
-const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt"; 
 
 
 //costruttore nuova transazione
@@ -17,10 +17,10 @@ Withdrawal::Withdrawal(double amount, std::string description, std::time_t timeS
     : Transaction(amount, std::move(description), timeStamp, lastMod, std::move(iban)) {}
 
 //aggiorna il saldo con saveToAccountFile() e salva la transazione nel log con logTransaction()
-void Withdrawal::apply(Account& account) const {
+void Withdrawal::apply(Account& account, const std::string& filePath) const {
     account.updateSaldo(-amount);
     saveToAccountFile(account.getFileRiferimento(), account.getSaldo());
-    saveToLogTransaction(TRANSACTIONS_PATH, account.getIban());
+    saveToLogTransaction(filePath, account.getIban());
 }
 
 //salva solo il saldo aggiornato nel file 
@@ -55,11 +55,15 @@ void Withdrawal::saveToLogTransaction(const std::string& filePath, const std::st
     }
 }
 
-void Withdrawal::modifyDescription(const std::string& newDescription) {
+bool Withdrawal::modifyDescription(const std::string& newDescription, const std::string& filePath) {
     description = newDescription;
     lastModified = std::time(nullptr);  //aggiorna il timestamp dell'ultima modifica
-    updateLogTransaction("transazioni.txt", *this);  
-}
+    try {
+        updateLogTransaction(filePath, *this);
+        return true; 
+    } catch (const std::exception& e) {
+        return false;
+    }}
 
 void Withdrawal::updateLogTransaction(const std::string& filePath, const Transaction& updatedTransaction) {
     ifstream inFile(filePath);
@@ -86,8 +90,7 @@ void Withdrawal::updateLogTransaction(const std::string& filePath, const Transac
         if (logIban == updatedTransaction.getIban() && 
             logTimeStr == to_string(updatedTransaction.getTime()) && 
             logType == updatedTransaction.getType() && 
-            logDesc == updatedTransaction.getDescription()) {
-            
+            logDesc == updatedTransaction.getDescription()) { 
             // Genera la nuova data dell'ultima modifica
             char bufferLastMod[20];
             struct tm* timeinfo;
@@ -127,4 +130,3 @@ void Withdrawal::updateLogTransaction(const std::string& filePath, const Transac
         throw runtime_error("Errore: transazione non trovata nel file.");
     }
 }
-

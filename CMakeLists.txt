@@ -6,31 +6,41 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 enable_testing()
 
-# Include directories for headers
+# Include directories
 include_directories(${CMAKE_SOURCE_DIR})
 
-# Gather all source files **except** `CMakeFiles`-generated files
-file(GLOB_RECURSE SOURCES ${CMAKE_SOURCE_DIR}/*.cpp)
-list(FILTER SOURCES EXCLUDE REGEX "CMakeFiles/.*CompilerIdCXX.*")
-
-# Ensure GoogleTest is fetched
+# Fetch GoogleTest
 include(FetchContent)
 FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/refs/tags/release-1.12.1.zip
 )
 FetchContent_MakeAvailable(googletest)
-
-# Ensure GoogleTest include directories are available
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-# **🔥 Create the main executable (without test files)**
-list(REMOVE_ITEM SOURCES ${CMAKE_SOURCE_DIR}/tests/test_main.cpp)  # Exclude test_main.cpp
-add_executable(main ${SOURCES} main.cpp)  # Now, main.cpp is only for `main`
+# Gather all source files
+file(GLOB_RECURSE SOURCES ${CMAKE_SOURCE_DIR}/*.cpp)
+list(FILTER SOURCES EXCLUDE REGEX "CMakeFiles/.*CompilerIdCXX.*")
 
-# **🔥 Create the test executable separately**
-add_executable(runTests tests/test_main.cpp tests/test_Account.cpp tests/test_Deposit.cpp tests/test_Withdrawal.cpp)
+# Main executable
+list(REMOVE_ITEM SOURCES ${CMAKE_SOURCE_DIR}/tests/test_main.cpp)  # Exclude test main from main program
+add_executable(main ${SOURCES} main.cpp)
+
+# Test executable
+add_executable(runTests 
+    tests/test_main.cpp 
+    tests/test_Account.cpp 
+    tests/test_Deposit.cpp 
+    tests/test_Withdrawal.cpp 
+    Account.cpp 
+    Deposit.cpp 
+    Withdrawal.cpp 
+    Persona.cpp
+)
+
+# Link libraries
 target_link_libraries(runTests PRIVATE gtest gtest_main pthread)
+target_link_libraries(main PRIVATE gtest gtest_main pthread)
 
-# Register test with CTest
+# Register tests
 add_test(NAME RunAllTests COMMAND runTests)

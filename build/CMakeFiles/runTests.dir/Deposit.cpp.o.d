@@ -1,7 +1,7 @@
-CMakeFiles/main.dir/Withdrawal.cpp.o: \
- /home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.cpp \
+CMakeFiles/runTests.dir/Deposit.cpp.o: \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Deposit.cpp \
  /usr/include/stdc-predef.h \
- /home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.h \
+ /home/simone/Documents/Università/LabProgrammazione/Transactions/Deposit.h \
  /home/simone/Documents/Università/LabProgrammazione/Transactions/Transaction.h \
  /usr/include/c++/11/fstream /usr/include/c++/11/istream \
  /usr/include/c++/11/ios /usr/include/c++/11/iosfwd \

@@ -7,8 +7,8 @@
 #include <vector>
 #include <memory>
 
-//TO_DO ricerca trasazioni, elimina transazioni, tutto in base ad una descrizione o data o parola data, check yransazioni esistenti e non (se il saldo in cambia)
-//controllo transazioni
+const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt"; 
+
 class Account {
 private:
     std::string iban;
@@ -20,7 +20,7 @@ public:
     Account(const std::string& iban, const Persona& intestatario, const std::string& fileRiferimento);
     ~Account(); 
 
-    void addTransaction(std::unique_ptr<Transaction> transaction);
+    void addTransaction(std::unique_ptr<Transaction> transaction, const std::string& filePath=TRANSACTIONS_PATH);
     void updateSaldo(double amount);  
     
     
@@ -33,19 +33,19 @@ public:
     std::string getCodicefiscale() const;
     std::string getFileRiferimento() const;
     double getSaldo() const;
-    bool hasTransactions() const; 
+    bool hasTransactions(const std::string& filePath = TRANSACTIONS_PATH) const; 
     
     static Account loadFromFile(const std::string& filePath);
 
-    void modifyTransactionByIndex(int index);
-    void modifyTransactionBySearch(const std::string& query);
+    void modifyTransactionByIndex(int index, const std::string& filePath=TRANSACTIONS_PATH);
+    void modifyTransactionBySearch(const std::string& query, const std::string& filePath=TRANSACTIONS_PATH);
 
-    void searchTransaction(const std::string& query) const;
+    void searchTransaction(const std::string& query, const std::string& filePath=TRANSACTIONS_PATH) const;
 
-    void deleteTransactionByIndex(int index);
-    void deleteTransactionBySearch(const std::string& query);
+    void deleteTransactionByIndex(int index, const std::string &filePath = TRANSACTIONS_PATH) ;
+    void deleteTransactionBySearch(const std::string& query, const std::string& filePath=TRANSACTIONS_PATH);
     
-    void printTransactions() const;
+    void printTransactions(const std::string& filePath=TRANSACTIONS_PATH) const;
 };
 
 #endif

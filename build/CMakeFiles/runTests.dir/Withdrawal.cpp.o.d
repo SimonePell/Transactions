@@ -1,4 +1,4 @@
-CMakeFiles/main.dir/Withdrawal.cpp.o: \
+CMakeFiles/runTests.dir/Withdrawal.cpp.o: \
  /home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.cpp \
  /usr/include/stdc-predef.h \
  /home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.h \

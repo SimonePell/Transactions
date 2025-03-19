@@ -8,6 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/simone/Documents/Università/LabProgrammazione/Transactions/Account.cpp" "CMakeFiles/runTests.dir/Account.cpp.o" "gcc" "CMakeFiles/runTests.dir/Account.cpp.o.d"
+  "/home/simone/Documents/Università/LabProgrammazione/Transactions/Deposit.cpp" "CMakeFiles/runTests.dir/Deposit.cpp.o" "gcc" "CMakeFiles/runTests.dir/Deposit.cpp.o.d"
+  "/home/simone/Documents/Università/LabProgrammazione/Transactions/Persona.cpp" "CMakeFiles/runTests.dir/Persona.cpp.o" "gcc" "CMakeFiles/runTests.dir/Persona.cpp.o.d"
+  "/home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.cpp" "CMakeFiles/runTests.dir/Withdrawal.cpp.o" "gcc" "CMakeFiles/runTests.dir/Withdrawal.cpp.o.d"
   "/home/simone/Documents/Università/LabProgrammazione/Transactions/tests/test_Account.cpp" "CMakeFiles/runTests.dir/tests/test_Account.cpp.o" "gcc" "CMakeFiles/runTests.dir/tests/test_Account.cpp.o.d"
   "/home/simone/Documents/Università/LabProgrammazione/Transactions/tests/test_Deposit.cpp" "CMakeFiles/runTests.dir/tests/test_Deposit.cpp.o" "gcc" "CMakeFiles/runTests.dir/tests/test_Deposit.cpp.o.d"
   "/home/simone/Documents/Università/LabProgrammazione/Transactions/tests/test_Withdrawal.cpp" "CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.o" "gcc" "CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.o.d"

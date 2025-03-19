@@ -255,6 +255,7 @@ Account.o: Account.cpp.o
 # target to build an object file
 Account.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Account.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.o
 .PHONY : Account.cpp.o
 
 Account.i: Account.cpp.i
@@ -263,6 +264,7 @@ Account.i: Account.cpp.i
 # target to preprocess a source file
 Account.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Account.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.i
 .PHONY : Account.cpp.i
 
 Account.s: Account.cpp.s
@@ -271,6 +273,7 @@ Account.s: Account.cpp.s
 # target to generate assembly for a file
 Account.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Account.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Account.cpp.s
 .PHONY : Account.cpp.s
 
 Deposit.o: Deposit.cpp.o
@@ -279,6 +282,7 @@ Deposit.o: Deposit.cpp.o
 # target to build an object file
 Deposit.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Deposit.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.o
 .PHONY : Deposit.cpp.o
 
 Deposit.i: Deposit.cpp.i
@@ -287,6 +291,7 @@ Deposit.i: Deposit.cpp.i
 # target to preprocess a source file
 Deposit.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Deposit.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.i
 .PHONY : Deposit.cpp.i
 
 Deposit.s: Deposit.cpp.s
@@ -295,6 +300,7 @@ Deposit.s: Deposit.cpp.s
 # target to generate assembly for a file
 Deposit.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Deposit.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Deposit.cpp.s
 .PHONY : Deposit.cpp.s
 
 Persona.o: Persona.cpp.o
@@ -303,6 +309,7 @@ Persona.o: Persona.cpp.o
 # target to build an object file
 Persona.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Persona.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.o
 .PHONY : Persona.cpp.o
 
 Persona.i: Persona.cpp.i
@@ -311,6 +318,7 @@ Persona.i: Persona.cpp.i
 # target to preprocess a source file
 Persona.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Persona.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.i
 .PHONY : Persona.cpp.i
 
 Persona.s: Persona.cpp.s
@@ -319,6 +327,7 @@ Persona.s: Persona.cpp.s
 # target to generate assembly for a file
 Persona.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Persona.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Persona.cpp.s
 .PHONY : Persona.cpp.s
 
 Withdrawal.o: Withdrawal.cpp.o
@@ -327,6 +336,7 @@ Withdrawal.o: Withdrawal.cpp.o
 # target to build an object file
 Withdrawal.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Withdrawal.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.o
 .PHONY : Withdrawal.cpp.o
 
 Withdrawal.i: Withdrawal.cpp.i
@@ -335,6 +345,7 @@ Withdrawal.i: Withdrawal.cpp.i
 # target to preprocess a source file
 Withdrawal.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Withdrawal.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.i
 .PHONY : Withdrawal.cpp.i
 
 Withdrawal.s: Withdrawal.cpp.s
@@ -343,6 +354,7 @@ Withdrawal.s: Withdrawal.cpp.s
 # target to generate assembly for a file
 Withdrawal.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Withdrawal.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/Withdrawal.cpp.s
 .PHONY : Withdrawal.cpp.s
 
 main.o: main.cpp.o

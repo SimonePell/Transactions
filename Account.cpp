@@ -11,7 +11,6 @@
 #include <memory>
 
 namespace fs = std::filesystem;
-const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt"; 
 
 Account::Account(const std::string& iban, const Persona& intestatario, const std::string& fileRiferimento)
 : iban(iban), intestatario(intestatario), fileRiferimento(fileRiferimento), saldo(0) 
@@ -23,8 +22,8 @@ std::cout << "DEBUG: Account created with IBAN " << iban << std::endl;
 Account::~Account() {}
 
 
-void Account::addTransaction(std::unique_ptr<Transaction> transaction) {
-    transaction->apply(*this);
+void Account::addTransaction(std::unique_ptr<Transaction> transaction, const std::string& filePath) {
+    transaction->apply(*this, filePath);
     saveToAccountFile();
 }
 
@@ -80,13 +79,13 @@ Account Account::loadFromFile(const std::string& filePath) {
 }
 
 
-void Account::searchTransaction(const std::string& query) const {
+void Account::searchTransaction(const std::string& query, const std::string& filePath) const {
     if (!hasTransactions()) {
         std::cout << "Errore: Nessuna transazione trovata per questo account.\n";
         return;
     }
 
-    std::ifstream file(TRANSACTIONS_PATH);
+    std::ifstream file(filePath);
     if (!file.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
     }
@@ -136,13 +135,13 @@ void Account::searchTransaction(const std::string& query) const {
 }
 
 
-void Account::modifyTransactionByIndex(int index) {
+void Account::modifyTransactionByIndex(int index, const std::string& filePath) {
     if (!hasTransactions()) {
         std::cout << "Errore: Nessuna transazione disponibile per la modifica.\n";
         return;
     }
 
-    std::ifstream file(TRANSACTIONS_PATH);
+    std::ifstream file(filePath);
     if (!file.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
     }
@@ -187,7 +186,7 @@ void Account::modifyTransactionByIndex(int index) {
         return;
     }
 
-    std::ofstream outFile(TRANSACTIONS_PATH, std::ios::trunc);
+    std::ofstream outFile(filePath, std::ios::trunc);
     if (!outFile.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file per la scrittura.");
     }
@@ -198,13 +197,13 @@ void Account::modifyTransactionByIndex(int index) {
 
     std::cout << "Descrizione modificata con successo!\n";
 }
-void Account::modifyTransactionBySearch(const std::string& query) {
+void Account::modifyTransactionBySearch(const std::string& query, const std::string& filePath) {
     if (!hasTransactions()) {
         std::cout << "Errore: Nessuna transazione disponibile per la modifica.\n";
         return;
     }
 
-    std::ifstream file(TRANSACTIONS_PATH);
+    std::ifstream file(filePath);
     if (!file.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
     }
@@ -272,8 +271,8 @@ void Account::modifyTransactionBySearch(const std::string& query) {
 
 
 
-void Account::deleteTransactionByIndex(int index) {
-    std::ifstream file(TRANSACTIONS_PATH);
+void Account::deleteTransactionByIndex(int index, const std::string &filePath) {
+    std::ifstream file(filePath);
     if (!file.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
     }
@@ -322,7 +321,7 @@ void Account::deleteTransactionByIndex(int index) {
     saveToAccountFile();
 
     // Write back updated transactions
-    std::ofstream outFile(TRANSACTIONS_PATH, std::ios::trunc);
+    std::ofstream outFile(filePath, std::ios::trunc);
     if (!outFile.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file per la scrittura.");
     }
@@ -333,13 +332,13 @@ void Account::deleteTransactionByIndex(int index) {
 
     std::cout << "Transazione eliminata con successo e saldo aggiornato.\n";
 }
-void Account::deleteTransactionBySearch(const std::string& query) {
+void Account::deleteTransactionBySearch(const std::string& query, const std::string& filePath) {
     if (!hasTransactions()) {
         std::cout << "Errore: Nessuna transazione disponibile per l'eliminazione.\n";
         return;
     }
 
-    std::ifstream file(TRANSACTIONS_PATH);
+    std::ifstream file(filePath);
     if (!file.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
     }
@@ -412,13 +411,13 @@ void Account::deleteTransactionBySearch(const std::string& query) {
 }
 
 
-void Account::printTransactions() const {
+void Account::printTransactions(const std::string& filePath) const {
     if (!hasTransactions()) {
         std::cout << "Errore: Nessuna transazione trovata per questo account.\n";
         return;
     }
 
-    std::ifstream file(TRANSACTIONS_PATH);
+    std::ifstream file(filePath);
     if (!file.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
     }
@@ -444,10 +443,14 @@ std::string Account::getCognome() const { return intestatario.getCognome(); }
 std::string Account::getCodicefiscale() const { return intestatario.getCodicefiscale(); }
 std::string Account::getFileRiferimento() const { return fileRiferimento; }
 
-bool Account::hasTransactions() const {
-    std::ifstream file(TRANSACTIONS_PATH);
+bool Account::hasTransactions(const std::string& filePath) const {
+    std::ifstream file(filePath);
     if (!file.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file delle transazioni.");
+    }
+
+    if (file.peek() == std::ifstream::traits_type::eof()) {
+        return false; 
     }
 
     std::string line;

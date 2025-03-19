@@ -27,7 +27,7 @@ public:
 
     virtual ~Transaction() {}
     
-    virtual void apply(Account& account) const = 0;
+    virtual void apply(Account& account, const std::string& filePath) const = 0;
     virtual void saveToAccountFile(const std::string& file, double currentBalance) const = 0;
 
     virtual double getAmount() const = 0;
@@ -40,10 +40,10 @@ public:
     virtual void saveToLogTransaction(const std::string& filePath, const std::string& iban) const = 0;
     virtual void updateLogTransaction(const std::string& filePath, const Transaction& updatedTransaction) = 0;
 
-    virtual void modifyDescription(const std::string& newDescription) = 0;
+    virtual bool modifyDescription(const std::string& newDescription, const std::string& filePath) = 0;
 
     virtual std::unique_ptr<Transaction> clone() const = 0;
-
+    virtual std::string formatTime(std::time_t rawTime) const = 0;
 };
 
 #endif 

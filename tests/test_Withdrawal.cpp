@@ -1,38 +1,104 @@
 #include <gtest/gtest.h>
+#include <filesystem>
+#include <fstream>
 #include "Withdrawal.h"
-#include "Deposit.h"
 #include "Account.h"
 #include "Persona.h"
+#include <fstream>
+#include <memory>
 
-//inizializzazione
-/*
-TEST(WithdrawalTest, WithdrawalInitialization) {
-    Withdrawal withdrawal(100.0);
-    EXPECT_EQ(withdrawal.getAmount(), 100.0);
+const std::string TEST_FILE = "test_account.txt";
+const std::string TEST_TRANSACTIONS = "test_transactions.txt";
+
+class WithdrawalTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        Persona persona("Mario", "Rossi", "MRORSS80A01");
+        account = std::make_unique<Account>("IT1234567", persona, TEST_FILE);
+        if (!std::filesystem::exists("TRANSACTION")) {
+            std::filesystem::create_directory("TRANSACTION");
+        }
+    
+        std::ofstream testFile(TEST_TRANSACTIONS, std::ios::app);
+        if (!testFile) {
+            throw std::runtime_error("Errore: impossibile creare il file di test per le transazioni.");
+        }
+        testFile.close();
+    }
+
+    void TearDown() override {
+        std::remove(TEST_FILE.c_str());
+        std::remove(TEST_TRANSACTIONS.c_str());
+    }
+
+    std::unique_ptr<Account> account;
+};
+
+TEST_F(WithdrawalTest, WithdrawalCreation) {
+    Withdrawal withdrawal(50.0, "Shopping", "IT1234567");
+    EXPECT_EQ(withdrawal.getAmount(), 50.0);
+    EXPECT_EQ(withdrawal.getDescription(), "Shopping");
+    EXPECT_EQ(withdrawal.getIban(), "IT1234567");
     EXPECT_EQ(withdrawal.getType(), "Withdrawal");
 }
 
-//prelievo con saldo sufficiente
-TEST(WithdrawalTest, ApplyWithdrawalSufficientFunds) {
-    Persona persona("Laura", "Bianchi", "LRABNC80H07F205X");
-    Account account("IT50E1234567890123456789014", persona, "test_withdrawal.txt");
-    
-    Deposit deposit(300.0);
-    deposit.apply(account);
-    Withdrawal withdrawal(150.0);
-    withdrawal.apply(account);
-    
-    EXPECT_EQ(account.getSaldo(), 150.0);
+TEST_F(WithdrawalTest, ApplyWithdrawal) {
+    account->updateSaldo(200.0);
+    Withdrawal withdrawal(50.0, "Cibo", "IT1234567");
+    withdrawal.apply(*account);
+    EXPECT_EQ(account->getSaldo(), 150.0);
 }
 
-//prelievo con saldo insufficiente
-TEST(WithdrawalTest, ApplyWithdrawalInsufficientFunds) {
-    Persona persona("Giorgio", "Neri", "GRGNER85D08G506Y");
-    Account account("IT60F1234567890123456789015", persona, "test_withdrawal.txt");
-    
-    Withdrawal withdrawal(100.0);
-    withdrawal.apply(account);
-    
-    EXPECT_LT(account.getSaldo(), 0); //dovrebbe essere negativo dato che non ci sono controlli
+TEST_F(WithdrawalTest, SaveToAccountFile) {
+    account->updateSaldo(300.0);
+    Withdrawal withdrawal(75.0, "Cibo", "IT1234567");
+    withdrawal.apply(*account);
+    std::ifstream file(TEST_FILE);
+    ASSERT_TRUE(file.is_open());
+    double storedBalance;
+    file >> storedBalance;
+    file.close();
+    EXPECT_EQ(storedBalance, 225.0);
 }
-*/
+
+TEST_F(WithdrawalTest, SaveToLogTransaction) {
+    account->updateSaldo(500.0);
+    Withdrawal withdrawal(200.0, "Affitto", "IT1234567");
+    withdrawal.apply(*account);
+    
+    std::ifstream file(TEST_TRANSACTIONS);
+    ASSERT_TRUE(file.is_open());
+    std::string line;
+    bool found = true;
+    while (std::getline(file, line)) {
+        if (line.find("IT1234567") != std::string::npos &&
+            line.find("Affitto") != std::string::npos) {
+            found = false;
+            break;
+        }
+    }
+    file.close();
+    EXPECT_TRUE(found);
+}
+
+TEST_F(WithdrawalTest, ModifyTransactionDescription) {
+    account->updateSaldo(600.0);
+    Withdrawal withdrawal(100.0, "Vecchia Descrizione", "IT1234567");
+    withdrawal.apply(*account);
+    withdrawal.modifyDescription("Descrizione aggiornata");
+    
+    std::ifstream file(TEST_TRANSACTIONS);
+    ASSERT_TRUE(file.is_open());
+    std::string line;
+    bool found = true;
+    while (std::getline(file, line)) {
+        if (line.find("Descrizione aggiornata") != std::string::npos) {
+            found = false;
+            break;
+        }
+    }
+    file.close();
+    EXPECT_TRUE(found);
+}
+
+

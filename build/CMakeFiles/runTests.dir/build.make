@@ -125,12 +125,72 @@ CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simone/Documents/Università/LabProgrammazione/Transactions/tests/test_Withdrawal.cpp -o CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.s
 
+CMakeFiles/runTests.dir/Account.cpp.o: CMakeFiles/runTests.dir/flags.make
+CMakeFiles/runTests.dir/Account.cpp.o: ../Account.cpp
+CMakeFiles/runTests.dir/Account.cpp.o: CMakeFiles/runTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simone/Documents/Università/LabProgrammazione/Transactions/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/runTests.dir/Account.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/runTests.dir/Account.cpp.o -MF CMakeFiles/runTests.dir/Account.cpp.o.d -o CMakeFiles/runTests.dir/Account.cpp.o -c /home/simone/Documents/Università/LabProgrammazione/Transactions/Account.cpp
+
+CMakeFiles/runTests.dir/Account.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/runTests.dir/Account.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simone/Documents/Università/LabProgrammazione/Transactions/Account.cpp > CMakeFiles/runTests.dir/Account.cpp.i
+
+CMakeFiles/runTests.dir/Account.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/runTests.dir/Account.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simone/Documents/Università/LabProgrammazione/Transactions/Account.cpp -o CMakeFiles/runTests.dir/Account.cpp.s
+
+CMakeFiles/runTests.dir/Deposit.cpp.o: CMakeFiles/runTests.dir/flags.make
+CMakeFiles/runTests.dir/Deposit.cpp.o: ../Deposit.cpp
+CMakeFiles/runTests.dir/Deposit.cpp.o: CMakeFiles/runTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simone/Documents/Università/LabProgrammazione/Transactions/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/runTests.dir/Deposit.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/runTests.dir/Deposit.cpp.o -MF CMakeFiles/runTests.dir/Deposit.cpp.o.d -o CMakeFiles/runTests.dir/Deposit.cpp.o -c /home/simone/Documents/Università/LabProgrammazione/Transactions/Deposit.cpp
+
+CMakeFiles/runTests.dir/Deposit.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/runTests.dir/Deposit.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simone/Documents/Università/LabProgrammazione/Transactions/Deposit.cpp > CMakeFiles/runTests.dir/Deposit.cpp.i
+
+CMakeFiles/runTests.dir/Deposit.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/runTests.dir/Deposit.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simone/Documents/Università/LabProgrammazione/Transactions/Deposit.cpp -o CMakeFiles/runTests.dir/Deposit.cpp.s
+
+CMakeFiles/runTests.dir/Withdrawal.cpp.o: CMakeFiles/runTests.dir/flags.make
+CMakeFiles/runTests.dir/Withdrawal.cpp.o: ../Withdrawal.cpp
+CMakeFiles/runTests.dir/Withdrawal.cpp.o: CMakeFiles/runTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simone/Documents/Università/LabProgrammazione/Transactions/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/runTests.dir/Withdrawal.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/runTests.dir/Withdrawal.cpp.o -MF CMakeFiles/runTests.dir/Withdrawal.cpp.o.d -o CMakeFiles/runTests.dir/Withdrawal.cpp.o -c /home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.cpp
+
+CMakeFiles/runTests.dir/Withdrawal.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/runTests.dir/Withdrawal.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.cpp > CMakeFiles/runTests.dir/Withdrawal.cpp.i
+
+CMakeFiles/runTests.dir/Withdrawal.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/runTests.dir/Withdrawal.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simone/Documents/Università/LabProgrammazione/Transactions/Withdrawal.cpp -o CMakeFiles/runTests.dir/Withdrawal.cpp.s
+
+CMakeFiles/runTests.dir/Persona.cpp.o: CMakeFiles/runTests.dir/flags.make
+CMakeFiles/runTests.dir/Persona.cpp.o: ../Persona.cpp
+CMakeFiles/runTests.dir/Persona.cpp.o: CMakeFiles/runTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simone/Documents/Università/LabProgrammazione/Transactions/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/runTests.dir/Persona.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/runTests.dir/Persona.cpp.o -MF CMakeFiles/runTests.dir/Persona.cpp.o.d -o CMakeFiles/runTests.dir/Persona.cpp.o -c /home/simone/Documents/Università/LabProgrammazione/Transactions/Persona.cpp
+
+CMakeFiles/runTests.dir/Persona.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/runTests.dir/Persona.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simone/Documents/Università/LabProgrammazione/Transactions/Persona.cpp > CMakeFiles/runTests.dir/Persona.cpp.i
+
+CMakeFiles/runTests.dir/Persona.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/runTests.dir/Persona.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simone/Documents/Università/LabProgrammazione/Transactions/Persona.cpp -o CMakeFiles/runTests.dir/Persona.cpp.s
+
 # Object files for target runTests
 runTests_OBJECTS = \
 "CMakeFiles/runTests.dir/tests/test_main.cpp.o" \
 "CMakeFiles/runTests.dir/tests/test_Account.cpp.o" \
 "CMakeFiles/runTests.dir/tests/test_Deposit.cpp.o" \
-"CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.o"
+"CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.o" \
+"CMakeFiles/runTests.dir/Account.cpp.o" \
+"CMakeFiles/runTests.dir/Deposit.cpp.o" \
+"CMakeFiles/runTests.dir/Withdrawal.cpp.o" \
+"CMakeFiles/runTests.dir/Persona.cpp.o"
 
 # External object files for target runTests
 runTests_EXTERNAL_OBJECTS =
@@ -139,12 +199,16 @@ runTests: CMakeFiles/runTests.dir/tests/test_main.cpp.o
 runTests: CMakeFiles/runTests.dir/tests/test_Account.cpp.o
 runTests: CMakeFiles/runTests.dir/tests/test_Deposit.cpp.o
 runTests: CMakeFiles/runTests.dir/tests/test_Withdrawal.cpp.o
+runTests: CMakeFiles/runTests.dir/Account.cpp.o
+runTests: CMakeFiles/runTests.dir/Deposit.cpp.o
+runTests: CMakeFiles/runTests.dir/Withdrawal.cpp.o
+runTests: CMakeFiles/runTests.dir/Persona.cpp.o
 runTests: CMakeFiles/runTests.dir/build.make
 runTests: lib/libgtest.a
 runTests: lib/libgtest_main.a
 runTests: lib/libgtest.a
 runTests: CMakeFiles/runTests.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/simone/Documents/Università/LabProgrammazione/Transactions/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable runTests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/simone/Documents/Università/LabProgrammazione/Transactions/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable runTests"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/runTests.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

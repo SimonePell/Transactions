@@ -220,6 +220,9 @@ main: CMakeFiles/main.dir/tests/test_Deposit.cpp.o
 main: CMakeFiles/main.dir/tests/test_Persona.cpp.o
 main: CMakeFiles/main.dir/tests/test_Withdrawal.cpp.o
 main: CMakeFiles/main.dir/build.make
+main: lib/libgtest.a
+main: lib/libgtest_main.a
+main: lib/libgtest.a
 main: CMakeFiles/main.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/simone/Documents/Università/LabProgrammazione/Transactions/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)

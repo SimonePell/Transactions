@@ -9,7 +9,6 @@
 #include "Withdrawal.h"
 
 const std::string ACCOUNTS_PATH = "TRANSACTION/Accounts/";
-const std::string TRANSACTIONS_PATH = "TRANSACTION/transazioni.txt";
 
 namespace fs = std::filesystem;
 
