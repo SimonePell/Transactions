@@ -64,16 +64,16 @@ TEST_F(WithdrawalTest, SaveToAccountFile) {
 TEST_F(WithdrawalTest, SaveToLogTransaction) {
     account->updateSaldo(500.0);
     Withdrawal withdrawal(200.0, "Affitto", "IT1234567");
-    withdrawal.apply(*account);
+    withdrawal.apply(*account, TEST_TRANSACTIONS);
     
     std::ifstream file(TEST_TRANSACTIONS);
     ASSERT_TRUE(file.is_open());
     std::string line;
-    bool found = true;
+    bool found = false;
     while (std::getline(file, line)) {
         if (line.find("IT1234567") != std::string::npos &&
             line.find("Affitto") != std::string::npos) {
-            found = false;
+            found = true;
             break;
         }
     }
@@ -82,18 +82,17 @@ TEST_F(WithdrawalTest, SaveToLogTransaction) {
 }
 
 TEST_F(WithdrawalTest, ModifyTransactionDescription) {
-    account->updateSaldo(600.0);
-    Withdrawal withdrawal(100.0, "Vecchia Descrizione", "IT1234567");
-    withdrawal.apply(*account);
-    withdrawal.modifyDescription("Descrizione aggiornata");
-    
+    Withdrawal withdrawal(300.0, "Deposito iniziale", "IT1234567");
+    withdrawal.apply(*account, TEST_TRANSACTIONS);
+    withdrawal.modifyDescription("Descrizione aggiornata", TEST_TRANSACTIONS);
+
     std::ifstream file(TEST_TRANSACTIONS);
     ASSERT_TRUE(file.is_open());
     std::string line;
-    bool found = true;
+    bool found = false;
     while (std::getline(file, line)) {
         if (line.find("Descrizione aggiornata") != std::string::npos) {
-            found = false;
+            found = true;
             break;
         }
     }

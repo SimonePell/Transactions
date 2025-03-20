@@ -87,11 +87,10 @@ void Deposit::updateLogTransaction(const std::string& filePath, const Transactio
         getline(ss, lastModStr);
 
         // Controlla se la transazione deve essere aggiornata
+        // Modifica: non confrontiamo più la descrizione originale né il timestamp formattato
         if (logIban == updatedTransaction.getIban() && 
-            logTimeStr == to_string(updatedTransaction.getTime()) && 
             logType == updatedTransaction.getType() && 
-            logDesc == updatedTransaction.getDescription() &&
-            amountStr == to_string(updatedTransaction.getAmount())) {
+            std::stod(amountStr) == updatedTransaction.getAmount()) {
             
             // Genera la nuova data dell'ultima modifica
             char bufferLastMod[20];
@@ -104,7 +103,7 @@ void Deposit::updateLogTransaction(const std::string& filePath, const Transactio
             stringstream newLine;
             newLine << logIban << "," 
                     << logType << "," 
-                    << amountStr << "," 
+                    << updatedTransaction.getAmount() << "," 
                     << logTimeStr << "," 
                     << updatedTransaction.getDescription() << "," 
                     << bufferLastMod;

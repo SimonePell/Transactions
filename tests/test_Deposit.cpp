@@ -59,16 +59,18 @@ TEST_F(DepositTest, SaveToAccountFile) {
 }
 
 TEST_F(DepositTest, SaveToLogTransaction) {
-    Deposit deposit(100.0, "Test deposito", "IT1234567");
-    deposit.saveToLogTransaction(TEST_TRANSACTIONS, account->getIban());
+    account->updateSaldo(500.0);
+    Deposit deposit(200.0, "Affitto", "IT1234567");
+    deposit.apply(*account, TEST_TRANSACTIONS);
+    
     std::ifstream file(TEST_TRANSACTIONS);
     ASSERT_TRUE(file.is_open());
     std::string line;
-    bool found = true;
+    bool found = false;
     while (std::getline(file, line)) {
-        if (line.find("IT1234567") == std::string::npos &&
-            line.find("Test deposito") == std::string::npos) {
-            found = false;
+        if (line.find("IT1234567") != std::string::npos &&
+            line.find("Affitto") != std::string::npos) {
+            found = true;
             break;
         }
     }
@@ -78,16 +80,16 @@ TEST_F(DepositTest, SaveToLogTransaction) {
 
 TEST_F(DepositTest, ModifyTransactionDescription) {
     Deposit deposit(300.0, "Deposito iniziale", "IT1234567");
-    deposit.apply(*account);
-    deposit.modifyDescription("Descrizione aggiornata");
+    deposit.apply(*account, TEST_TRANSACTIONS);
+    deposit.modifyDescription("Descrizione aggiornata", TEST_TRANSACTIONS);
 
     std::ifstream file(TEST_TRANSACTIONS);
     ASSERT_TRUE(file.is_open());
     std::string line;
-    bool found = true;
+    bool found = false;
     while (std::getline(file, line)) {
         if (line.find("Descrizione aggiornata") != std::string::npos) {
-            found = false;
+            found = true;
             break;
         }
     }

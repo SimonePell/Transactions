@@ -63,7 +63,8 @@ bool Withdrawal::modifyDescription(const std::string& newDescription, const std:
         return true; 
     } catch (const std::exception& e) {
         return false;
-    }}
+    }
+}
 
 void Withdrawal::updateLogTransaction(const std::string& filePath, const Transaction& updatedTransaction) {
     ifstream inFile(filePath);
@@ -87,10 +88,11 @@ void Withdrawal::updateLogTransaction(const std::string& filePath, const Transac
         getline(ss, lastModStr);
 
         // Controlla se la transazione deve essere aggiornata
+        // Modifica: non confrontiamo più la descrizione originale né il timestamp formattato
         if (logIban == updatedTransaction.getIban() && 
-            logTimeStr == to_string(updatedTransaction.getTime()) && 
             logType == updatedTransaction.getType() && 
-            logDesc == updatedTransaction.getDescription()) { 
+            std::stod(amountStr) == updatedTransaction.getAmount()) {
+            
             // Genera la nuova data dell'ultima modifica
             char bufferLastMod[20];
             struct tm* timeinfo;
