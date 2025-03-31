@@ -86,20 +86,19 @@ void Deposit::updateLogTransaction(const std::string& filePath, const Transactio
         getline(ss, logDesc, ',');
         getline(ss, lastModStr);
 
-        // Controlla se la transazione deve essere aggiornata
-        // Modifica: non confrontiamo più la descrizione originale né il timestamp formattato
+        //controlla se la transazione deve essere aggiornata
         if (logIban == updatedTransaction.getIban() && 
             logType == updatedTransaction.getType() && 
             std::stod(amountStr) == updatedTransaction.getAmount()) {
             
-            // Genera la nuova data dell'ultima modifica
+            //genera la nuova data dell'ultima modifica
             char bufferLastMod[20];
             struct tm* timeinfo;
             std::time_t lastModTime = updatedTransaction.getLastModified();
             timeinfo = localtime(&lastModTime);
             strftime(bufferLastMod, sizeof(bufferLastMod), "%Y-%m-%d %H:%M:%S", timeinfo);
 
-            // Crea la nuova riga aggiornata
+            //crea la nuova riga aggiornata
             stringstream newLine;
             newLine << logIban << "," 
                     << logType << "," 
@@ -116,7 +115,7 @@ void Deposit::updateLogTransaction(const std::string& filePath, const Transactio
     }
     inFile.close();
 
-    // Scrivi le nuove righe aggiornate nel file
+    //scrive le nuove righe aggiornate nel file
     ofstream outFile(filePath, ios::trunc);
     if (!outFile.is_open()) {
         throw runtime_error("Errore: impossibile aprire il file " + filePath);

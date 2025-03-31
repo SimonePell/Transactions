@@ -79,19 +79,15 @@ TEST_F(AccountTest, HasNoTransactionsInitially) {
 
 
 TEST_F(AccountTest, DeleteTransactionByIndex) {
-    // Step 1: Add a transaction
     std::unique_ptr<Transaction> deposit = std::make_unique<Deposit>(100.0, "Test deposit", "IT1234567");
     account->addTransaction(std::move(deposit), TEST_TRANSACTIONS);
     account->saveToAccountFile();
 
-    // Step 3: Delete the transaction
     account->deleteTransactionByIndex(0, TEST_TRANSACTIONS);
 
-    // Step 4: Verify account balance is updated
     std::cout << "DEBUG: Balance after deletion: " << account->getSaldo() << std::endl;
     EXPECT_EQ(account->getSaldo(), 0) << "ERROR: Balance not updated after deletion!";
 
-    // Step 5: Verify transaction file is empty after deletion
     std::ifstream afterFile(TEST_TRANSACTIONS);
     bool fileIsEmpty = afterFile.peek() == std::ifstream::traits_type::eof();
     afterFile.close();
@@ -104,7 +100,7 @@ TEST_F(AccountTest, SearchTransaction) {
     std::ofstream file(TEST_TRANSACTIONS);
     file << "IT1234567,Deposit,100,2024-03-18 10:00:00,Test deposit,2024-03-18 10:01:00\n";
     file.close();
-    account->searchTransaction("deposit"); // Should print a result
+    account->searchTransaction("deposit"); 
 }
 
 TEST_F(AccountTest, ModifyTransactionByIndex) {
@@ -112,5 +108,4 @@ TEST_F(AccountTest, ModifyTransactionByIndex) {
     file << "IT1234567,Deposit,100,2024-03-18 10:00:00,Old description,2024-03-18 10:01:00\n";
     file.close();
     account->modifyTransactionByIndex(0);
-    // Normally we'd mock cin, but this requires interactive input.
 }

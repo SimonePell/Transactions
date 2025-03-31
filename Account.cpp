@@ -49,8 +49,6 @@ void Account::saveToAccountFile() const {
 }
 
 
-
-
 Account Account::loadFromFile(const std::string& filePath) {
     //restituisce un oggetto Account costruito con i dati letti dal file 
     std::ifstream file(filePath);
@@ -94,7 +92,7 @@ void Account::searchTransaction(const std::string& query, const std::string& fil
     bool found = false;
     int index = 0;
 
-    // Convert query to lowercase for case-insensitive comparison
+    //lowercase per il confronto case-insensitive 
     std::string queryLower = query;
     std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), ::tolower);
 
@@ -111,15 +109,14 @@ void Account::searchTransaction(const std::string& query, const std::string& fil
         std::getline(iss, logDesc, ',');
         std::getline(iss, lastModStr);
 
-        // Check if transaction belongs to this account
         if (transIban == iban) {
-            // Convert date and description to lowercase for comparison
+            // Convert date and description to lowercase per confrontare
             std::string logTimeLower = logTimeStr;
             std::string logDescLower = logDesc;
             std::transform(logTimeLower.begin(), logTimeLower.end(), logTimeLower.begin(), ::tolower);
             std::transform(logDescLower.begin(), logDescLower.end(), logDescLower.begin(), ::tolower);
 
-            // Perform case-insensitive partial matching
+            //case-insensitive matching parziale
             if (logTimeLower.find(queryLower) != std::string::npos || logDescLower.find(queryLower) != std::string::npos) {
                 std::cout << index++ << ". " << line << "\n";
                 found = true;
@@ -265,10 +262,8 @@ void Account::modifyTransactionBySearch(const std::string& query, const std::str
         }
     }
 
-    // Call modifyTransactionByIndex using the real file index
     modifyTransactionByIndex(matchingIndexes[selectedIndex]);
 }
-
 
 
 void Account::deleteTransactionByIndex(int index, const std::string &filePath) {
@@ -310,17 +305,15 @@ void Account::deleteTransactionByIndex(int index, const std::string &filePath) {
         throw std::runtime_error("Errore: transazione non trovata.");
     }
 
-    // Update the account balance
     if (transactionType == "Deposit") {
-        saldo -= transactionAmount;  // Reverse deposit
+        saldo -= transactionAmount; 
     } else if (transactionType == "Withdrawal") {
-        saldo += transactionAmount;  // Reverse withdrawal
+        saldo += transactionAmount;  
     }
 
-    // Save the updated balance to the account file
+
     saveToAccountFile();
 
-    // Write back updated transactions
     std::ofstream outFile(filePath, std::ios::trunc);
     if (!outFile.is_open()) {
         throw std::runtime_error("Errore nell'apertura del file per la scrittura.");
@@ -349,7 +342,7 @@ void Account::deleteTransactionBySearch(const std::string& query, const std::str
     int originalIndex = 0;
     int displayIndex = 0;
 
-    // Convert query to lowercase for case-insensitive comparison
+    // lowercase per case-insensitive comparison
     std::string queryLower = query;
     std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), ::tolower);
 
@@ -366,15 +359,13 @@ void Account::deleteTransactionBySearch(const std::string& query, const std::str
         std::getline(iss, logDesc, ',');
         std::getline(iss, lastModStr);
 
-        // Check if transaction belongs to this account
         if (transIban == iban) {
-            // Convert date and description to lowercase for comparison
             std::string logTimeLower = logTimeStr;
             std::string logDescLower = logDesc;
             std::transform(logTimeLower.begin(), logTimeLower.end(), logTimeLower.begin(), ::tolower);
             std::transform(logDescLower.begin(), logDescLower.end(), logDescLower.begin(), ::tolower);
 
-            // Perform case-insensitive partial matching
+            // case-insensitive partial matching
             if (logTimeLower.find(queryLower) != std::string::npos || logDescLower.find(queryLower) != std::string::npos) {
                 std::cout << displayIndex << ". " << line << "\n";
                 matchingTransactions.push_back(line);
@@ -382,7 +373,7 @@ void Account::deleteTransactionBySearch(const std::string& query, const std::str
                 displayIndex++;
             }
         }
-        originalIndex++; // Increment the real index in the file
+        originalIndex++; 
     }
 
     file.close();
@@ -392,7 +383,6 @@ void Account::deleteTransactionBySearch(const std::string& query, const std::str
         return;
     }
 
-    // Ask the user for the index to delete
     int selectedIndex;
     std::cout << "Inserisci l'indice della transazione da eliminare: ";
     while (true) {
@@ -406,7 +396,6 @@ void Account::deleteTransactionBySearch(const std::string& query, const std::str
         }
     }
 
-    // Delete the transaction using its actual index in the file
     deleteTransactionByIndex(matchingIndexes[selectedIndex]);
 }
 
@@ -461,10 +450,10 @@ bool Account::hasTransactions(const std::string& filePath) const {
 
         if (transIban == iban) {
             file.close();
-            return true; // Found a transaction for this account
+            return true; 
         }
     }
 
     file.close();
-    return false; // No transactions found
+    return false; 
 }
