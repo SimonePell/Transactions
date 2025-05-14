@@ -26,7 +26,7 @@ void accountMenu(Account &account) {
         std::cout << "4. Cerca Transazione\n";
         std::cout << "5. Elimina Transazione\n";
         std::cout << "6. Visualizza Transazioni\n";
-        std::cout << "7. modifica descrizione\n";
+        std::cout << "7. Modifica descrizione\n";
         std::cout << "8. Esci dall'account\n";
         std::cout << "Scegli: ";
         std::cin >> choice;
@@ -37,13 +37,12 @@ void accountMenu(Account &account) {
                 std::cin >> amount;
                 if(amount <= 0){
                     std::cout << "Errore: importo non valido.\n";
-                    std::cout << "Deposito non effettuato.\n";
                     break;
                 }
                 std::cout << "Inserisci la descrizione del deposito: ";
                 std::cin.ignore(); 
                 std::getline(std::cin, desc);
-                account.addTransaction(std::make_unique<Deposit>(amount, desc, account.getIban())); // Use make_unique
+                account.addTransaction(std::make_unique<Deposit>(amount, desc, account.getIban()));
                 std::cout << "Deposito effettuato con successo.\n";
                 break;
 
@@ -52,10 +51,9 @@ void accountMenu(Account &account) {
                 std::cin >> amount;
                 if(amount <= 0){
                     std::cout << "Errore: importo non valido.\n";
-                    std::cout << "Prelievo non effettuato.\n";
                     break;
                 }
-                std::cout <<"Inserire la descrizone del prelievo: ";
+                std::cout <<"Inserire la descrizione del prelievo: ";
                 std::cin.ignore();
                 std::getline(std::cin, desc);
                 account.addTransaction(std::make_unique<Withdrawal>(amount, desc, account.getIban()));
@@ -63,54 +61,119 @@ void accountMenu(Account &account) {
                 break;
             
             case 3:
-                std::cout << "Il saldo dell'account è: " << account.getSaldo();
+                std::cout << "Il saldo dell'account è: " << account.getSaldo() << "\n";
                 break;
 
             case 4:
                 std::cout << "Inserisci una parola/descrizione o una data: ";
                 std::cin.ignore();
                 std::getline(std::cin, desc);
-                account.searchTransaction(desc);
+                {
+                    auto results = account.searchTransaction(desc);
+                    if (results.empty()) {
+                        std::cout << "Nessuna transazione trovata con il criterio: " << desc << "\n";
+                    } else {
+                        for (size_t i = 0; i < results.size(); ++i) {
+                            const auto* t = results[i];
+                            std::cout << i << ". " << t->getIban() << ", " << t->getType() << ", "
+                                      << t->getAmount() << ", " << t->formatTime(t->getTime()) << ", "
+                                      << t->getDescription() << ", " << t->formatTime(t->getLastModified()) << "\n";
+                        }
+                    }
+                }
                 break;
 
             case 5:
-                if(account.hasTransactions() == false){
+                if(!account.hasTransactions()){
                     std::cout << "Errore: Nessuna transazione trovata per questo account.\n";
                     break;
                 }   
-                std::cout << "Digitare 1 per eliminare una transazione per indice, 2 per eliminare una transazione per descrizione o data: ";
+                std::cout << "Digitare 1 per eliminare per indice, 2 per ricerca: ";
                 std::cin >> choice;
                 if(choice == 1){
-                    std::cout << "Inserisci l'indice della transazione da eliminare: ";
+                    std::cout << "Indice da eliminare: ";
                     std::cin >> id;
-                    account.deleteTransactionByIndex(id);
-                }else if(choice == 2){
-                    std::cout << "Inserisci la descrizione o data della transazione da eliminare: ";
+                    if (account.deleteTransactionByIndex(id)) {
+                        std::cout << "Transazione eliminata con successo.\n";
+                    } else {
+                        std::cout << "Errore: indice non valido.\n";
+                    }
+                } else if(choice == 2){
+                    std::cout << "Query: ";
                     std::cin.ignore();
                     std::getline(std::cin, desc);
-                    account.deleteTransactionBySearch(desc);
-                }else{
+                    auto results = account.searchTransaction(desc);
+                    if (results.empty()) {
+                        std::cout << "Nessuna transazione trovata.\n";
+                        break;
+                    }
+                    for (size_t i = 0; i < results.size(); ++i) {
+                        const auto* t = results[i];
+                        std::cout << i << ". " << t->getDescription() << "\n";
+                    }
+                    std::cout << "Indice da eliminare: ";
+                    std::cin >> id;
+                    if (account.deleteTransactionBySearch(desc, id)) {
+                        std::cout << "Transazione eliminata.\n";
+                    } else {
+                        std::cout << "Errore nella cancellazione.\n";
+                    }
+                } else {
                     std::cout << "Scelta non valida.\n";
                 }
                 break;
 
             case 6:
-                account.printTransactions();
+                if (!account.hasTransactions()) {
+                    std::cout << "Nessuna transazione trovata.\n";
+                } else {
+                    for (size_t i = 0; i < account.getTransazioni().size(); ++i) {
+                        const auto& t = account[i];
+                        std::cout << i << ". " << t->getIban() << ", " << t->getType() << ", "
+                                  << t->getAmount() << ", " << t->formatTime(t->getTime()) << ", "
+                                  << t->getDescription() << ", " << t->formatTime(t->getLastModified()) << "\n";
+                    }
+                }
                 break;
             
             case 7:
-                std::cout << "Digitare 1 per modificare una transazione per indice, 2 per modificare una transazione per descrizione o data: ";
+                std::cout << "Digitare 1 per modificare per indice, 2 per ricerca: ";
                 std::cin >> choice;
                 if(choice == 1){
-                    std::cout << "Inserisci l'indice della transazione da modificare: ";
+                    std::cout << "Indice da modificare: ";
                     std::cin >> id;
-                    account.modifyTransactionByIndex(id);
-                }else if(choice == 2){
-                    std::cout << "Inserisci la descrizione o data della transazione da modificare: ";
+                    std::cout << "Nuova descrizione: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, newDesc);
+                    if (account.modifyTransactionByIndex(id, newDesc)) {
+                        std::cout << "Modifica effettuata.\n";
+                    } else {
+                        std::cout << "Errore nella modifica.\n";
+                    }
+                } else if(choice == 2){
+                    std::cout << "Query: ";
                     std::cin.ignore();
                     std::getline(std::cin, desc);
-                    account.modifyTransactionBySearch(desc);
-                }else{
+                    auto results = account.searchTransaction(desc);
+                    if (results.empty()) {
+                        std::cout << "Nessuna transazione trovata.\n";
+                        break;
+                    }
+                    for (size_t i = 0; i < results.size(); ++i) {
+                        const auto* t = results[i];
+                        std::cout << i << ". " << t->getDescription() << "\n";
+                    }
+                    std::cout << "Indice da modificare: ";
+                    std::cin >> id;
+                    std::cout << "Nuova descrizione: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, newDesc);
+                    if (account.modifyTransactionBySearch(desc, id, newDesc)) {
+                        std::cout << "Modifica effettuata.\n";
+                    } else {
+                        std::cout << "Errore nella modifica.\n";
+                    }
+                } else {
                     std::cout << "Scelta non valida.\n";
                 }
                 break;
@@ -122,7 +185,6 @@ void accountMenu(Account &account) {
         }
     }
 }
-
 
 int main() {
     std::string iban, nome, cognome, codicefiscale;
@@ -162,7 +224,7 @@ int main() {
                 std::cin >> codicefiscale;
                 {
                     Persona persona(nome, cognome, codicefiscale);
-                    Account account(iban, persona, "TRANSACTION/Accounts/" + iban + "_transactions.csv");
+                    Account account(iban, persona, ACCOUNTS_PATH + iban + "_transactions.csv");
                     account.saveToAccountFile();
                     std::cout << "Account creato con successo.\n";
                     accountMenu(account);
