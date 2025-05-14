@@ -21,10 +21,16 @@ public:
     Account(const std::string& iban, const Persona& intestatario, const std::string& fileRiferimento);
     ~Account();
 
+    Account(const Account&) = delete;
+    Account& operator=(const Account&) = delete;
+    Account(Account&&) noexcept = default;
+    Account& operator=(Account&&) noexcept = default;
+
+
+    // Gestione transazioni
     void addTransaction(std::unique_ptr<Transaction> transaction, const std::string& filePath = TRANSACTIONS_PATH);
     void updateSaldo(double amount);
     void saveToAccountFile() const;
-
     static Account loadFromFile(const std::string& filePath);
 
     // Getter
@@ -34,35 +40,26 @@ public:
     std::string getCodicefiscale() const;
     std::string getFileRiferimento() const;
     double getSaldo() const;
-    bool hasTransactions(const std::string& filePath = TRANSACTIONS_PATH) const;
 
-    // Accesso alle transazioni
     const std::vector<std::unique_ptr<Transaction>>& getTransazioni() const;
     const Transaction* getTransactionByIndex(int index) const;
 
     Transaction* operator[](size_t index);
     const Transaction* operator[](size_t index) const;
 
-    // Ricerca
-    void searchTransaction(const std::string& query, const std::string& filePath = TRANSACTIONS_PATH) const;
+    // Overload SEARCH
     std::vector<const Transaction*> searchTransaction(const std::string& query) const;
+    std::vector<const Transaction*> searchTransaction(const std::string& query, const std::string& filePath) const;
 
-    // Modifica (overload)
-    void modifyTransactionByIndex(int index, const std::string& filePath = TRANSACTIONS_PATH);
-    bool modifyTransactionByIndex(int index, const std::string& nuovaDescrizione, const std::string& filePath = TRANSACTIONS_PATH);
+    // Overload MODIFY
+    bool modifyTransaction(int index, const std::string& nuovaDescrizione, const std::string& filePath = TRANSACTIONS_PATH);
+    bool modifyTransaction(const std::string& query, int matchIndex, const std::string& nuovaDescrizione, const std::string& filePath = TRANSACTIONS_PATH);
 
-    void modifyTransactionBySearch(const std::string& query, const std::string& filePath = TRANSACTIONS_PATH);
-    bool modifyTransactionBySearch(const std::string& query, int matchIndex, const std::string& nuovaDescrizione, const std::string& filePath = TRANSACTIONS_PATH);
+    // Overload DELETE
+    bool deleteTransaction(int index, const std::string& filePath = TRANSACTIONS_PATH);
+    bool deleteTransaction(const std::string& query, int matchIndex, const std::string& filePath = TRANSACTIONS_PATH);
 
-    // Eliminazione (overload)
-    void deleteTransactionByIndex(int index, const std::string& filePath = TRANSACTIONS_PATH);
-    bool deleteTransactionByIndex(int index, const std::string& filePath);
-
-    void deleteTransactionBySearch(const std::string& query, const std::string& filePath = TRANSACTIONS_PATH);
-    bool deleteTransactionBySearch(const std::string& query, int matchIndex, const std::string& filePath = TRANSACTIONS_PATH);
-
-    // Visualizzazione
-    void printTransactions(const std::string& filePath = TRANSACTIONS_PATH) const;
+    void printTransactions() const;
 };
 
 #endif

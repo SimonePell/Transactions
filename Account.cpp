@@ -113,7 +113,6 @@ std::string Account::getCognome() const { return intestatario.getCognome(); }
 std::string Account::getCodicefiscale() const { return intestatario.getCodicefiscale(); }
 std::string Account::getFileRiferimento() const { return fileRiferimento; }
 double Account::getSaldo() const { return saldo; }
-bool Account::hasTransactions(const std::string& filePath) const { return !transazioni.empty(); }
 
 const std::vector<std::unique_ptr<Transaction>>& Account::getTransazioni() const {
     return transazioni;
@@ -142,50 +141,35 @@ const Transaction* Account::operator[](size_t index) const {
 
 std::vector<const Transaction*> Account::searchTransaction(const std::string& query) const {
     std::vector<const Transaction*> results;
-    std::string queryLower = query;
-    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), ::tolower);
+    std::string q = query;
+    std::transform(q.begin(), q.end(), q.begin(), ::tolower);
 
     for (const auto& t : transazioni) {
-        std::string timeLower = t->formatTime(t->getTime());
-        std::string descLower = t->getDescription();
-        std::transform(timeLower.begin(), timeLower.end(), timeLower.begin(), ::tolower);
-        std::transform(descLower.begin(), descLower.end(), descLower.begin(), ::tolower);
+        std::string time = t->formatTime(t->getTime());
+        std::string desc = t->getDescription();
+        std::transform(time.begin(), time.end(), time.begin(), ::tolower);
+        std::transform(desc.begin(), desc.end(), desc.begin(), ::tolower);
 
-        if (timeLower.find(queryLower) != std::string::npos || descLower.find(queryLower) != std::string::npos) {
+        if (time.find(q) != std::string::npos || desc.find(q) != std::string::npos) {
             results.push_back(t.get());
         }
     }
-
     return results;
 }
 
-void Account::searchTransaction(const std::string& query, const std::string& filePath) const {
-    auto results = searchTransaction(query);
-    if (results.empty()) {
-        std::cout << "Nessuna transazione trovata con il criterio: " << query << "\n";
-        return;
-    }
-
-    for (size_t i = 0; i < results.size(); ++i) {
-        const auto* t = results[i];
-        std::cout << i << ". " << t->getIban() << ", " << t->getType() << ", "
-                  << t->getAmount() << ", " << t->formatTime(t->getTime()) << ", "
-                  << t->getDescription() << ", " << t->formatTime(t->getLastModified()) << "\n";
-    }
+std::vector<const Transaction*> Account::searchTransaction(const std::string& query, const std::string& filePath) const {
+    return searchTransaction(query); // filePath ignorato, compatibilità overload
 }
 
-bool Account::modifyTransactionByIndex(int index, const std::string& nuovaDescrizione, const std::string& filePath) {
-    if (index < 0 || index >= static_cast<int>(transazioni.size())) {
-        return false;
-    }
+
+bool Account::modifyTransaction(int index, const std::string& nuovaDescrizione, const std::string& filePath) {
+    if (index < 0 || index >= static_cast<int>(transazioni.size())) return false;
     return transazioni[index]->modifyDescription(nuovaDescrizione, filePath);
 }
 
-bool Account::modifyTransactionBySearch(const std::string& query, int matchIndex, const std::string& nuovaDescrizione, const std::string& filePath) {
+bool Account::modifyTransaction(const std::string& query, int matchIndex, const std::string& nuovaDescrizione, const std::string& filePath) {
     auto results = searchTransaction(query);
-    if (matchIndex < 0 || matchIndex >= static_cast<int>(results.size())) {
-        return false;
-    }
+    if (matchIndex < 0 || matchIndex >= static_cast<int>(results.size())) return false;
 
     const Transaction* target = results[matchIndex];
     for (auto& t : transazioni) {
@@ -193,17 +177,15 @@ bool Account::modifyTransactionBySearch(const std::string& query, int matchIndex
             return t->modifyDescription(nuovaDescrizione, filePath);
         }
     }
-
     return false;
 }
 
-bool Account::deleteTransactionByIndex(int index, const std::string& filePath) {
-    if (index < 0 || index >= static_cast<int>(transazioni.size())) {
-        return false;
-    }
 
-    double amount = transazioni[index]->getAmount();
+bool Account::deleteTransaction(int index, const std::string& filePath) {
+    if (index < 0 || index >= static_cast<int>(transazioni.size())) return false;
+
     std::string type = transazioni[index]->getType();
+    double amount = transazioni[index]->getAmount();
 
     if (type == "Deposit") saldo -= amount;
     else if (type == "Withdrawal") saldo += amount;
@@ -211,36 +193,31 @@ bool Account::deleteTransactionByIndex(int index, const std::string& filePath) {
     transazioni.erase(transazioni.begin() + index);
     saveToAccountFile();
 
+    // riscrive tutto il log
     std::ofstream outFile(filePath, std::ios::trunc);
-    if (!outFile.is_open()) {
-        throw std::runtime_error("Errore scrittura file transazioni.");
-    }
+    if (!outFile.is_open()) throw std::runtime_error("Errore scrittura file transazioni.");
 
     for (const auto& t : transazioni) {
         t->saveToLogTransaction(filePath, iban);
     }
 
-    outFile.close();
     return true;
 }
 
-bool Account::deleteTransactionBySearch(const std::string& query, int matchIndex, const std::string& filePath) {
+bool Account::deleteTransaction(const std::string& query, int matchIndex, const std::string& filePath) {
     auto results = searchTransaction(query);
-    if (matchIndex < 0 || matchIndex >= static_cast<int>(results.size())) {
-        return false;
-    }
+    if (matchIndex < 0 || matchIndex >= static_cast<int>(results.size())) return false;
 
     const Transaction* target = results[matchIndex];
     for (size_t i = 0; i < transazioni.size(); ++i) {
         if (transazioni[i].get() == target) {
-            return deleteTransactionByIndex(i, filePath);
+            return deleteTransaction(static_cast<int>(i), filePath);
         }
     }
-
     return false;
 }
 
-void Account::printTransactions(const std::string& filePath) const {
+void Account::printTransactions() const {
     if (transazioni.empty()) {
         std::cout << "Nessuna transazione trovata.\n";
         return;

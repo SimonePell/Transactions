@@ -16,7 +16,6 @@ void accountMenu(Account &account) {
     int choice, id;
     double amount;
     std::string desc, newDesc;
-    Transaction* t;
 
     while (true) {
         std::cout << "\n--- Menu Account ---\n";
@@ -53,7 +52,7 @@ void accountMenu(Account &account) {
                     std::cout << "Errore: importo non valido.\n";
                     break;
                 }
-                std::cout <<"Inserire la descrizione del prelievo: ";
+                std::cout << "Inserire la descrizione del prelievo: ";
                 std::cin.ignore();
                 std::getline(std::cin, desc);
                 account.addTransaction(std::make_unique<Withdrawal>(amount, desc, account.getIban()));
@@ -84,7 +83,7 @@ void accountMenu(Account &account) {
                 break;
 
             case 5:
-                if(!account.hasTransactions()){
+                if(account.getTransazioni().empty()){
                     std::cout << "Errore: Nessuna transazione trovata per questo account.\n";
                     break;
                 }   
@@ -93,7 +92,7 @@ void accountMenu(Account &account) {
                 if(choice == 1){
                     std::cout << "Indice da eliminare: ";
                     std::cin >> id;
-                    if (account.deleteTransactionByIndex(id)) {
+                    if (account.deleteTransaction(id)) {
                         std::cout << "Transazione eliminata con successo.\n";
                     } else {
                         std::cout << "Errore: indice non valido.\n";
@@ -113,7 +112,7 @@ void accountMenu(Account &account) {
                     }
                     std::cout << "Indice da eliminare: ";
                     std::cin >> id;
-                    if (account.deleteTransactionBySearch(desc, id)) {
+                    if (account.deleteTransaction(desc, id)) {
                         std::cout << "Transazione eliminata.\n";
                     } else {
                         std::cout << "Errore nella cancellazione.\n";
@@ -124,15 +123,10 @@ void accountMenu(Account &account) {
                 break;
 
             case 6:
-                if (!account.hasTransactions()) {
+                if (account.getTransazioni().empty()) {
                     std::cout << "Nessuna transazione trovata.\n";
                 } else {
-                    for (size_t i = 0; i < account.getTransazioni().size(); ++i) {
-                        const auto& t = account[i];
-                        std::cout << i << ". " << t->getIban() << ", " << t->getType() << ", "
-                                  << t->getAmount() << ", " << t->formatTime(t->getTime()) << ", "
-                                  << t->getDescription() << ", " << t->formatTime(t->getLastModified()) << "\n";
-                    }
+                    account.printTransactions();
                 }
                 break;
             
@@ -145,7 +139,7 @@ void accountMenu(Account &account) {
                     std::cout << "Nuova descrizione: ";
                     std::cin.ignore();
                     std::getline(std::cin, newDesc);
-                    if (account.modifyTransactionByIndex(id, newDesc)) {
+                    if (account.modifyTransaction(id, newDesc)) {
                         std::cout << "Modifica effettuata.\n";
                     } else {
                         std::cout << "Errore nella modifica.\n";
@@ -168,7 +162,7 @@ void accountMenu(Account &account) {
                     std::cout << "Nuova descrizione: ";
                     std::cin.ignore();
                     std::getline(std::cin, newDesc);
-                    if (account.modifyTransactionBySearch(desc, id, newDesc)) {
+                    if (account.modifyTransaction(desc, id, newDesc)) {
                         std::cout << "Modifica effettuata.\n";
                     } else {
                         std::cout << "Errore nella modifica.\n";
@@ -177,6 +171,7 @@ void accountMenu(Account &account) {
                     std::cout << "Scelta non valida.\n";
                 }
                 break;
+
             case 8:
                 return;
 
