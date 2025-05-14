@@ -51,7 +51,23 @@
         "codecvt": "cpp",
         "ctime": "cpp",
         "ratio": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "any": "cpp",
+        "condition_variable": "cpp",
+        "csignal": "cpp",
+        "cstring": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "optional": "cpp",
+        "mutex": "cpp",
+        "semaphore": "cpp",
+        "span": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "cinttypes": "cpp",
+        "variant": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

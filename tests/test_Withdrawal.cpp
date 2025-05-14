@@ -4,8 +4,6 @@
 #include "Withdrawal.h"
 #include "Account.h"
 #include "Persona.h"
-#include <fstream>
-#include <memory>
 
 const std::string TEST_FILE = "test_account.txt";
 const std::string TEST_TRANSACTIONS = "test_transactions.txt";
@@ -15,15 +13,13 @@ protected:
     void SetUp() override {
         Persona persona("Mario", "Rossi", "MRORSS80A01");
         account = std::make_unique<Account>("IT1234567", persona, TEST_FILE);
+
+        std::ofstream clearFile(TEST_TRANSACTIONS, std::ios::trunc); // clear file
+        clearFile.close();
+
         if (!std::filesystem::exists("TRANSACTION")) {
             std::filesystem::create_directory("TRANSACTION");
         }
-    
-        std::ofstream testFile(TEST_TRANSACTIONS, std::ios::app);
-        if (!testFile) {
-            throw std::runtime_error("Errore: impossibile creare il file di test per le transazioni.");
-        }
-        testFile.close();
     }
 
     void TearDown() override {
@@ -34,6 +30,7 @@ protected:
     std::unique_ptr<Account> account;
 };
 
+// Verifica i valori di una nuova transazione
 TEST_F(WithdrawalTest, WithdrawalCreation) {
     Withdrawal withdrawal(50.0, "Shopping", "IT1234567");
     EXPECT_EQ(withdrawal.getAmount(), 50.0);
@@ -42,32 +39,21 @@ TEST_F(WithdrawalTest, WithdrawalCreation) {
     EXPECT_EQ(withdrawal.getType(), "Withdrawal");
 }
 
-TEST_F(WithdrawalTest, ApplyWithdrawal) {
+// Verifica che il saldo venga aggiornato correttamente
+TEST_F(WithdrawalTest, ApplyWithdrawalThroughAccount) {
     account->updateSaldo(200.0);
-    Withdrawal withdrawal(50.0, "Cibo", "IT1234567");
-    withdrawal.apply(*account);
+    account->addTransaction(std::make_unique<Withdrawal>(50.0, "Cibo", "IT1234567"), TEST_TRANSACTIONS);
     EXPECT_EQ(account->getSaldo(), 150.0);
 }
 
-TEST_F(WithdrawalTest, SaveToAccountFile) {
-    account->updateSaldo(300.0);
-    Withdrawal withdrawal(75.0, "Cibo", "IT1234567");
-    withdrawal.apply(*account);
-    std::ifstream file(TEST_FILE);
-    ASSERT_TRUE(file.is_open());
-    double storedBalance;
-    file >> storedBalance;
-    file.close();
-    EXPECT_EQ(storedBalance, 225.0);
-}
-
+// Verifica che la transazione venga registrata nel file log
 TEST_F(WithdrawalTest, SaveToLogTransaction) {
     account->updateSaldo(500.0);
-    Withdrawal withdrawal(200.0, "Affitto", "IT1234567");
-    withdrawal.apply(*account, TEST_TRANSACTIONS);
-    
+    account->addTransaction(std::make_unique<Withdrawal>(200.0, "Affitto", "IT1234567"), TEST_TRANSACTIONS);
+
     std::ifstream file(TEST_TRANSACTIONS);
     ASSERT_TRUE(file.is_open());
+
     std::string line;
     bool found = false;
     while (std::getline(file, line)) {
@@ -81,17 +67,20 @@ TEST_F(WithdrawalTest, SaveToLogTransaction) {
     EXPECT_TRUE(found);
 }
 
+// Verifica che una descrizione venga effettivamente modificata e salvata
 TEST_F(WithdrawalTest, ModifyTransactionDescription) {
-    Withdrawal withdrawal(300.0, "Deposito iniziale", "IT1234567");
-    withdrawal.apply(*account, TEST_TRANSACTIONS);
-    withdrawal.modifyDescription("Descrizione aggiornata", TEST_TRANSACTIONS);
+    account->addTransaction(std::make_unique<Withdrawal>(300.0, "Old desc", "IT1234567"), TEST_TRANSACTIONS);
+
+    bool modified = account->modifyTransaction(0, "Nuova descrizione", TEST_TRANSACTIONS);
+    EXPECT_TRUE(modified);
 
     std::ifstream file(TEST_TRANSACTIONS);
     ASSERT_TRUE(file.is_open());
+
     std::string line;
     bool found = false;
     while (std::getline(file, line)) {
-        if (line.find("Descrizione aggiornata") != std::string::npos) {
+        if (line.find("Nuova descrizione") != std::string::npos) {
             found = true;
             break;
         }
@@ -99,5 +88,3 @@ TEST_F(WithdrawalTest, ModifyTransactionDescription) {
     file.close();
     EXPECT_TRUE(found);
 }
-
-

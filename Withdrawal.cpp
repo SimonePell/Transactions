@@ -16,10 +16,9 @@ Withdrawal::Withdrawal(double amount, std::string description, std::string iban)
 Withdrawal::Withdrawal(double amount, std::string description, std::time_t timeStamp, std::time_t lastMod, std::string iban)
     : Transaction(amount, std::move(description), timeStamp, lastMod, std::move(iban)) {}
 
-//aggiorna il saldo con saveToAccountFile() e salva la transazione nel log con logTransaction()
+
 void Withdrawal::apply(Account& account, const std::string& filePath) const {
     account.updateSaldo(-amount);
-    saveToAccountFile(account.getFileRiferimento(), account.getSaldo());
     saveToLogTransaction(filePath, account.getIban());
 }
 

@@ -11,23 +11,17 @@ const std::string TEST_TRANSACTIONS = "test_transactions.txt";
 
 class AccountTest : public ::testing::Test {
 protected:
-void SetUp() override {
-    Persona persona("Mario", "Rossi", "MRORSS80A01");
-    account = std::make_unique<Account>("IT1234567", persona, TEST_FILE);
+    void SetUp() override {
+        Persona persona("Mario", "Rossi", "MRORSS80A01");
+        account = std::make_unique<Account>("IT1234567", persona, TEST_FILE);
 
-    if (!std::filesystem::exists("TRANSACTION")) {
-        std::filesystem::create_directory("TRANSACTION");
+        if (!std::filesystem::exists("TRANSACTION")) {
+            std::filesystem::create_directory("TRANSACTION");
+        }
+
+        std::ofstream testFile(TEST_TRANSACTIONS, std::ios::trunc);
+        testFile.close();
     }
-
-    // Ensure transaction file is completely empty
-    std::ofstream testFile(TEST_TRANSACTIONS, std::ios::trunc);
-    testFile.close();
-
-    // Verify file is empty
-    std::ifstream verifyFile(TEST_TRANSACTIONS);
-    EXPECT_TRUE(verifyFile.peek() == std::ifstream::traits_type::eof()) << "ERROR: Transactions file not empty!";
-    verifyFile.close();
-}
 
     void TearDown() override {
         std::remove(TEST_FILE.c_str());
@@ -62,50 +56,59 @@ TEST_F(AccountTest, SaveAndLoadAccount) {
 }
 
 TEST_F(AccountTest, AddTransactionDeposit) {
-    std::unique_ptr<Transaction> deposit = std::make_unique<Deposit>(100.0, "transazione", "IT1234567");
-    account->addTransaction(std::move(deposit));
+    auto deposit = std::make_unique<Deposit>(100.0, "transazione", "IT1234567");
+    account->addTransaction(std::move(deposit), TEST_TRANSACTIONS);
     EXPECT_EQ(account->getSaldo(), 100.0);
 }
+
 TEST_F(AccountTest, AddTransactionWithdrawal) {
     account->updateSaldo(200.0);
-    std::unique_ptr<Transaction> withdrawal = std::make_unique<Withdrawal>(50.0, "transazione", "IT1234567");
-    account->addTransaction(std::move(withdrawal));
+    auto withdrawal = std::make_unique<Withdrawal>(50.0, "transazione", "IT1234567");
+    account->addTransaction(std::move(withdrawal), TEST_TRANSACTIONS);
     EXPECT_EQ(account->getSaldo(), 150.0);
 }
 
 TEST_F(AccountTest, HasNoTransactionsInitially) {
-    EXPECT_FALSE(account->hasTransactions(TEST_TRANSACTIONS));
+    EXPECT_FALSE(!account->getTransazioni().empty());
 }
 
-
 TEST_F(AccountTest, DeleteTransactionByIndex) {
-    std::unique_ptr<Transaction> deposit = std::make_unique<Deposit>(100.0, "Test deposit", "IT1234567");
+    auto deposit = std::make_unique<Deposit>(100.0, "Test deposit", "IT1234567");
     account->addTransaction(std::move(deposit), TEST_TRANSACTIONS);
     account->saveToAccountFile();
 
-    account->deleteTransactionByIndex(0, TEST_TRANSACTIONS);
-
-    std::cout << "DEBUG: Balance after deletion: " << account->getSaldo() << std::endl;
-    EXPECT_EQ(account->getSaldo(), 0) << "ERROR: Balance not updated after deletion!";
+    bool deleted = account->deleteTransaction(0, TEST_TRANSACTIONS);
+    EXPECT_TRUE(deleted);
+    EXPECT_EQ(account->getSaldo(), 0);
 
     std::ifstream afterFile(TEST_TRANSACTIONS);
     bool fileIsEmpty = afterFile.peek() == std::ifstream::traits_type::eof();
     afterFile.close();
-    
-    ASSERT_TRUE(fileIsEmpty) << "ERROR: Transactions file is not empty after deletion!";
+    EXPECT_TRUE(fileIsEmpty);
 }
-
 
 TEST_F(AccountTest, SearchTransaction) {
-    std::ofstream file(TEST_TRANSACTIONS);
+    account->saveToAccountFile();  // Crea test_account.txt
+
+    // SCRIVI NEL FILE GIUSTO
+    std::ofstream file("TRANSACTION/transazioni.txt");
     file << "IT1234567,Deposit,100,2024-03-18 10:00:00,Test deposit,2024-03-18 10:01:00\n";
     file.close();
-    account->searchTransaction("deposit"); 
+
+    Account loaded = Account::loadFromFile(TEST_FILE);
+    auto results = loaded.searchTransaction("deposit");
+    EXPECT_FALSE(results.empty());
 }
 
+
 TEST_F(AccountTest, ModifyTransactionByIndex) {
+    account->saveToAccountFile();  // Crea il file account
+
     std::ofstream file(TEST_TRANSACTIONS);
     file << "IT1234567,Deposit,100,2024-03-18 10:00:00,Old description,2024-03-18 10:01:00\n";
     file.close();
-    account->modifyTransactionByIndex(0);
+
+    Account loaded = Account::loadFromFile(TEST_FILE);
+    bool modified = loaded.modifyTransaction(0, "New description", TEST_TRANSACTIONS);
+    EXPECT_TRUE(modified);
 }
