@@ -139,13 +139,6 @@ const Transaction* Account::getTransactionByIndex(int index) const {
 }
 
 // operatori [] per accedere a una transazione come se fosse un array
-Transaction* Account::operator[](size_t index) {
-    if (index < transazioni.size()) {
-        return transazioni[index].get();
-    }
-    return nullptr;
-}
-
 const Transaction* Account::operator[](size_t index) const {
     if (index < transazioni.size()) {
         return transazioni[index].get();

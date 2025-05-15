@@ -82,7 +82,7 @@ TEST_F(AccountTest, AddTransactionWithdrawal) {
 
 // test per controllare che non ci siano transazioni appena creato
 TEST_F(AccountTest, HasNoTransactionsInitially) {
-    EXPECT_FALSE(!account->getTransazioni().empty()); // il doppio ! serve a controllare che sia vuoto
+    EXPECT_FALSE(!account->getTransazioni().empty()); 
 }
 
 // test per eliminare una transazione con indice
