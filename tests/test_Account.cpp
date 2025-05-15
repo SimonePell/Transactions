@@ -103,7 +103,7 @@ TEST_F(AccountTest, DeleteTransactionByIndex) {
 }
 
 // test per cercare una transazione nel file
-TEST_F(AccountTest, SearchTransaction) {
+TEST_F(AccountTest, SearchTransactionNotFound) {
     account->saveToAccountFile();  
 
     std::ofstream file("TRANSACTION/transazioni.txt");
@@ -111,8 +111,21 @@ TEST_F(AccountTest, SearchTransaction) {
     file.close();
 
     Account loaded = Account::loadFromFile(TEST_FILE);
+    auto results = loaded.searchTransaction("ssfef");
+    EXPECT_EQ(results.size(),  0); 
+}
+
+TEST_F(AccountTest, SearchTransactionFound) {
+    account->saveToAccountFile();  
+
+    std::ofstream file("TRANSACTION/transazioni.txt");
+    file << "IT1234567,Deposit,100,2024-03-18 10:00:00,Test deposit,2024-03-18 10:01:00\n";
+    file << "IT1234567,Deposit,100,2024-03-18 10:00:00,Test withdrawal,2024-03-18 10:01:00\n";
+    file.close();
+
+    Account loaded = Account::loadFromFile(TEST_FILE);
     auto results = loaded.searchTransaction("deposit");
-    EXPECT_FALSE(results.empty());
+    EXPECT_EQ(results.size(),  1); 
 }
 
 // test per modificare una transazione tramite indice
