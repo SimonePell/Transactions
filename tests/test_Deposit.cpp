@@ -5,23 +5,30 @@
 #include "Account.h"
 #include "Persona.h"
 
+// file usati nei test
 const std::string TEST_FILE = "test_account.txt";
 const std::string TEST_TRANSACTIONS = "test_transactions.txt";
 
+// classe di test per i depositi
 class DepositTest : public ::testing::Test {
 protected:
+    // viene eseguito prima di ogni test
     void SetUp() override {
+        // crea un account fittizio
         Persona persona("Mario", "Rossi", "MRORSS80A01");
         account = std::make_unique<Account>("IT1234567", persona, TEST_FILE);
 
-        std::ofstream clearFile(TEST_TRANSACTIONS, std::ios::trunc); // Pulisce il file
+        // svuota il file delle transazioni
+        std::ofstream clearFile(TEST_TRANSACTIONS, std::ios::trunc);
         clearFile.close();
 
+        // crea la cartella se non esiste
         if (!std::filesystem::exists("TRANSACTION")) {
             std::filesystem::create_directory("TRANSACTION");
         }
     }
 
+    // viene eseguito dopo ogni test
     void TearDown() override {
         std::remove(TEST_FILE.c_str());
         std::remove(TEST_TRANSACTIONS.c_str());
@@ -30,7 +37,7 @@ protected:
     std::unique_ptr<Account> account;
 };
 
-// Verifica i valori di una nuova transazione Deposit
+// controlla se i valori del deposito sono corretti appena creato
 TEST_F(DepositTest, DepositCreation) {
     Deposit deposit(150.0, "Stipendio", "IT1234567");
     EXPECT_EQ(deposit.getAmount(), 150.0);
@@ -39,13 +46,13 @@ TEST_F(DepositTest, DepositCreation) {
     EXPECT_EQ(deposit.getType(), "Deposit");
 }
 
-// Verifica che l'applicazione del deposito aggiorni correttamente il saldo
+// verifica che il saldo aumenti quando si fa un deposito
 TEST_F(DepositTest, ApplyDepositThroughAccount) {
     account->addTransaction(std::make_unique<Deposit>(200.0, "Bonifico", "IT1234567"), TEST_TRANSACTIONS);
     EXPECT_EQ(account->getSaldo(), 200.0);
 }
 
-// Verifica che il deposito venga salvato nel file di log
+// controlla che il deposito venga scritto correttamente nel file
 TEST_F(DepositTest, SaveToLogTransaction) {
     account->addTransaction(std::make_unique<Deposit>(300.0, "Regalo", "IT1234567"), TEST_TRANSACTIONS);
 
@@ -54,6 +61,7 @@ TEST_F(DepositTest, SaveToLogTransaction) {
 
     std::string line;
     bool found = false;
+    // cerca una riga con l'iban e la descrizione
     while (std::getline(file, line)) {
         if (line.find("IT1234567") != std::string::npos &&
             line.find("Regalo") != std::string::npos) {
@@ -65,7 +73,7 @@ TEST_F(DepositTest, SaveToLogTransaction) {
     EXPECT_TRUE(found);
 }
 
-// Verifica che si possa aggiornare la descrizione di un deposito
+// controlla che si possa cambiare la descrizione di un deposito
 TEST_F(DepositTest, ModifyTransactionDescription) {
     account->addTransaction(std::make_unique<Deposit>(100.0, "Vecchia descrizione", "IT1234567"), TEST_TRANSACTIONS);
 
@@ -77,6 +85,7 @@ TEST_F(DepositTest, ModifyTransactionDescription) {
 
     std::string line;
     bool found = false;
+    // cerca nel file la nuova descrizione
     while (std::getline(file, line)) {
         if (line.find("Descrizione aggiornata") != std::string::npos) {
             found = true;

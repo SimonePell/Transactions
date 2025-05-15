@@ -6,23 +6,30 @@
 #include "Deposit.h"
 #include "Withdrawal.h"
 
+// nomi dei file usati per i test
 const std::string TEST_FILE = "test_account.txt";
 const std::string TEST_TRANSACTIONS = "test_transactions.txt";
 
+// classe di test per account
 class AccountTest : public ::testing::Test {
 protected:
+    // setup eseguito prima di ogni test
     void SetUp() override {
+        // crea un account fittizio
         Persona persona("Mario", "Rossi", "MRORSS80A01");
         account = std::make_unique<Account>("IT1234567", persona, TEST_FILE);
 
+        // crea la cartella per le transazioni se non esiste
         if (!std::filesystem::exists("TRANSACTION")) {
             std::filesystem::create_directory("TRANSACTION");
         }
 
+        // svuota il file delle transazioni
         std::ofstream testFile(TEST_TRANSACTIONS, std::ios::trunc);
         testFile.close();
     }
 
+    // pulizia dopo ogni test
     void TearDown() override {
         std::remove(TEST_FILE.c_str());
         std::remove(TEST_TRANSACTIONS.c_str());
@@ -31,6 +38,7 @@ protected:
     std::unique_ptr<Account> account;
 };
 
+// test che verifica se l'account è creato correttamente
 TEST_F(AccountTest, AccountCreation) {
     EXPECT_EQ(account->getIban(), "IT1234567");
     EXPECT_EQ(account->getNome(), "Mario");
@@ -39,6 +47,7 @@ TEST_F(AccountTest, AccountCreation) {
     EXPECT_EQ(account->getSaldo(), 0);
 }
 
+// test per verificare se il saldo si aggiorna
 TEST_F(AccountTest, UpdateSaldo) {
     account->updateSaldo(100.5);
     EXPECT_EQ(account->getSaldo(), 100.5);
@@ -46,6 +55,7 @@ TEST_F(AccountTest, UpdateSaldo) {
     EXPECT_EQ(account->getSaldo(), 50.0);
 }
 
+// test che salva e ricarica un account da file
 TEST_F(AccountTest, SaveAndLoadAccount) {
     account->updateSaldo(200.0);
     account->saveToAccountFile();
@@ -55,12 +65,14 @@ TEST_F(AccountTest, SaveAndLoadAccount) {
     EXPECT_EQ(loadedAccount.getSaldo(), 200.0);
 }
 
+// test per aggiungere una transazione di deposito
 TEST_F(AccountTest, AddTransactionDeposit) {
     auto deposit = std::make_unique<Deposit>(100.0, "transazione", "IT1234567");
     account->addTransaction(std::move(deposit), TEST_TRANSACTIONS);
     EXPECT_EQ(account->getSaldo(), 100.0);
 }
 
+// test per aggiungere un prelievo
 TEST_F(AccountTest, AddTransactionWithdrawal) {
     account->updateSaldo(200.0);
     auto withdrawal = std::make_unique<Withdrawal>(50.0, "transazione", "IT1234567");
@@ -68,10 +80,12 @@ TEST_F(AccountTest, AddTransactionWithdrawal) {
     EXPECT_EQ(account->getSaldo(), 150.0);
 }
 
+// test per controllare che non ci siano transazioni appena creato
 TEST_F(AccountTest, HasNoTransactionsInitially) {
-    EXPECT_FALSE(!account->getTransazioni().empty());
+    EXPECT_FALSE(!account->getTransazioni().empty()); // il doppio ! serve a controllare che sia vuoto
 }
 
+// test per eliminare una transazione con indice
 TEST_F(AccountTest, DeleteTransactionByIndex) {
     auto deposit = std::make_unique<Deposit>(100.0, "Test deposit", "IT1234567");
     account->addTransaction(std::move(deposit), TEST_TRANSACTIONS);
@@ -81,16 +95,17 @@ TEST_F(AccountTest, DeleteTransactionByIndex) {
     EXPECT_TRUE(deleted);
     EXPECT_EQ(account->getSaldo(), 0);
 
+    // controlla che il file delle transazioni sia vuoto dopo la cancellazione
     std::ifstream afterFile(TEST_TRANSACTIONS);
     bool fileIsEmpty = afterFile.peek() == std::ifstream::traits_type::eof();
     afterFile.close();
     EXPECT_TRUE(fileIsEmpty);
 }
 
+// test per cercare una transazione nel file
 TEST_F(AccountTest, SearchTransaction) {
-    account->saveToAccountFile();  // Crea test_account.txt
+    account->saveToAccountFile();  
 
-    // SCRIVI NEL FILE GIUSTO
     std::ofstream file("TRANSACTION/transazioni.txt");
     file << "IT1234567,Deposit,100,2024-03-18 10:00:00,Test deposit,2024-03-18 10:01:00\n";
     file.close();
@@ -100,9 +115,9 @@ TEST_F(AccountTest, SearchTransaction) {
     EXPECT_FALSE(results.empty());
 }
 
-
+// test per modificare una transazione tramite indice
 TEST_F(AccountTest, ModifyTransactionByIndex) {
-    account->saveToAccountFile();  // Crea il file account
+    account->saveToAccountFile(); 
 
     std::ofstream file(TEST_TRANSACTIONS);
     file << "IT1234567,Deposit,100,2024-03-18 10:00:00,Old description,2024-03-18 10:01:00\n";

@@ -1,3 +1,4 @@
+// include dei file necessari per usare le classi account, transazioni, ecc.
 #include "Account.h"
 #include "Deposit.h"
 #include "Withdrawal.h"
@@ -13,21 +14,26 @@
 
 namespace fs = std::filesystem;
 
+// costruttore dell'account, inizializza i dati base
 Account::Account(const std::string& iban, const Persona& intestatario, const std::string& fileRiferimento)
 : iban(iban), intestatario(intestatario), fileRiferimento(fileRiferimento), saldo(0) {}
 
+// distruttore (non fa niente di speciale qui)
 Account::~Account() {}
 
+// aggiunge una nuova transazione, la applica, la salva e la mette nella lista
 void Account::addTransaction(std::unique_ptr<Transaction> transaction, const std::string& filePath) {
     transaction->apply(*this, filePath);
     transazioni.push_back(transaction->clone());
     saveToAccountFile();
 }
 
+// aggiorna il saldo con un importo
 void Account::updateSaldo(double amount) {
     saldo += amount;
 }
 
+// salva i dati dell'account su file (iban, nome, saldo...)
 void Account::saveToAccountFile() const {
     std::ofstream file(fileRiferimento, std::ios::trunc);
     if (file.is_open()) {
@@ -42,6 +48,7 @@ void Account::saveToAccountFile() const {
     }
 }
 
+// carica un account da un file con anche le sue transazioni
 Account Account::loadFromFile(const std::string& filePath) {
     std::ifstream file(filePath);
     std::string iban, nome, cognome, codicefiscale;
@@ -63,6 +70,7 @@ Account Account::loadFromFile(const std::string& filePath) {
     Account account(iban, persona, filePath);
     account.updateSaldo(saldo);
 
+    // ora carica le transazioni associate all'iban da un altro file
     std::ifstream transFile(TRANSACTIONS_PATH);
     if (!transFile.is_open()) {
         throw std::runtime_error("Errore: impossibile aprire il file delle transazioni.");
@@ -85,6 +93,7 @@ Account Account::loadFromFile(const std::string& filePath) {
             std::time_t timestamp = 0;
             std::time_t lastModified = 0;
 
+            // converte stringhe in data/ora
             std::istringstream ssTime(timeStr);
             std::istringstream ssMod(lastModStr);
             std::tm tm1 = {}, tm2 = {};
@@ -95,6 +104,7 @@ Account Account::loadFromFile(const std::string& filePath) {
                 lastModified = std::mktime(&tm2);
             }
 
+            // aggiunge la transazione alla lista giusta
             if (transType == "Deposit") {
                 account.transazioni.push_back(std::make_unique<Deposit>(amount, desc, timestamp, lastModified, iban));
             } else if (transType == "Withdrawal") {
@@ -107,6 +117,7 @@ Account Account::loadFromFile(const std::string& filePath) {
     return account;
 }
 
+// metodi semplici per ottenere informazioni sull'account
 std::string Account::getIban() const { return iban; }
 std::string Account::getNome() const { return intestatario.getNome(); }
 std::string Account::getCognome() const { return intestatario.getCognome(); }
@@ -114,10 +125,12 @@ std::string Account::getCodicefiscale() const { return intestatario.getCodicefis
 std::string Account::getFileRiferimento() const { return fileRiferimento; }
 double Account::getSaldo() const { return saldo; }
 
+// restituisce tutte le transazioni
 const std::vector<std::unique_ptr<Transaction>>& Account::getTransazioni() const {
     return transazioni;
 }
 
+// restituisce una transazione specifica usando l'indice
 const Transaction* Account::getTransactionByIndex(int index) const {
     if (index >= 0 && index < static_cast<int>(transazioni.size())) {
         return transazioni[index].get();
@@ -125,6 +138,7 @@ const Transaction* Account::getTransactionByIndex(int index) const {
     return nullptr;
 }
 
+// operatori [] per accedere a una transazione come se fosse un array
 Transaction* Account::operator[](size_t index) {
     if (index < transazioni.size()) {
         return transazioni[index].get();
@@ -139,6 +153,7 @@ const Transaction* Account::operator[](size_t index) const {
     return nullptr;
 }
 
+// cerca le transazioni che contengono una certa parola nella descrizione o nella data
 std::vector<const Transaction*> Account::searchTransaction(const std::string& query) const {
     std::vector<const Transaction*> results;
     std::string q = query;
@@ -157,16 +172,18 @@ std::vector<const Transaction*> Account::searchTransaction(const std::string& qu
     return results;
 }
 
+// versione alternativa della ricerca, ma il filePath viene ignorato
 std::vector<const Transaction*> Account::searchTransaction(const std::string& query, const std::string& filePath) const {
-    return searchTransaction(query); // filePath ignorato, compatibilità overload
+    return searchTransaction(query);
 }
 
-
+// modifica la descrizione di una transazione usando l'indice
 bool Account::modifyTransaction(int index, const std::string& nuovaDescrizione, const std::string& filePath) {
     if (index < 0 || index >= static_cast<int>(transazioni.size())) return false;
     return transazioni[index]->modifyDescription(nuovaDescrizione, filePath);
 }
 
+// modifica la descrizione cercando prima la transazione con una parola chiave
 bool Account::modifyTransaction(const std::string& query, int matchIndex, const std::string& nuovaDescrizione, const std::string& filePath) {
     auto results = searchTransaction(query);
     if (matchIndex < 0 || matchIndex >= static_cast<int>(results.size())) return false;
@@ -180,7 +197,7 @@ bool Account::modifyTransaction(const std::string& query, int matchIndex, const 
     return false;
 }
 
-
+// elimina una transazione usando l'indice e aggiorna saldo e file
 bool Account::deleteTransaction(int index, const std::string& filePath) {
     if (index < 0 || index >= static_cast<int>(transazioni.size())) return false;
 
@@ -193,7 +210,7 @@ bool Account::deleteTransaction(int index, const std::string& filePath) {
     transazioni.erase(transazioni.begin() + index);
     saveToAccountFile();
 
-    // riscrive tutto il log
+    // riscrive il file delle transazioni
     std::ofstream outFile(filePath, std::ios::trunc);
     if (!outFile.is_open()) throw std::runtime_error("Errore scrittura file transazioni.");
 
@@ -204,6 +221,7 @@ bool Account::deleteTransaction(int index, const std::string& filePath) {
     return true;
 }
 
+// elimina una transazione trovandola con una parola chiave
 bool Account::deleteTransaction(const std::string& query, int matchIndex, const std::string& filePath) {
     auto results = searchTransaction(query);
     if (matchIndex < 0 || matchIndex >= static_cast<int>(results.size())) return false;
@@ -217,6 +235,7 @@ bool Account::deleteTransaction(const std::string& query, int matchIndex, const 
     return false;
 }
 
+// stampa tutte le transazioni a video in formato leggibile
 void Account::printTransactions() const {
     if (transazioni.empty()) {
         std::cout << "Nessuna transazione trovata.\n";
